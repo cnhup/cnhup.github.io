@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Excel Tools | Excel Tool Set</title>
+    <link>http://www.exceltoolset.com/</link>
+    <description>Recent content on Excel Tools | Excel Tool Set</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 31 May 2014 01:38:01 +0000</lastBuildDate>
+    <atom:link href="http://www.exceltoolset.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Sending EMail With VBA</title>
+      <link>http://www.exceltoolset.com/sending-email-with-vba/</link>
+      <pubDate>Sat, 31 May 2014 01:38:01 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/sending-email-with-vba/</guid>
+      <description>&lt;p&gt;It is not difficult to add the ability to send email from your application. If all you want to do is send the workbook, with just a subject but no content, you can use ThisWorkbook.SendMail. However, if you want to include text in the body of the message or include additional files as attachments, you need some VBA code. The page describes a function called &lt;strong&gt;SendEmail&lt;/strong&gt; that wraps up the details in a nice, VBA-friendly function.&lt;/p&gt;
+
+&lt;p&gt;The code is shown below.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: vb&#34;&gt;&lt;code class=&#34;language-basic&#34;&gt;Function SendEMail(Subject As String, _
+        FromAddress As String, _
+        ToAddress As String, _
+        MailBody As String, _
+        SMTP_Server As String, _
+        BodyFileName As String, _
+        Optional Attachments As Variant = Empty) As Boolean
+&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;
+&#39; SendEmail Function
+&#39; By Chip Pearson, chip@cpearson.com www.cpearson.com 28-June-2012
+&#39;
+&#39; This function sends an email to the specified user.
+&#39; Parameters:
+&#39;   Subject:        The subject of the email.
+&#39;   FromAddress:    The sender&#39;s email address
+&#39;   ToAddress:      The recipient&#39;s email address or addresses.
+&#39;   MailBody:       The body of the email.
+&#39;   SMTP_Server:    The SMTP-Server name for outgoing mail.
+&#39;   BodyFileName:   A text file containing the body of the email.
+&#39;   Attachments     A single file name or an array of file names to
+&#39;                   attach to the message. The files must exist.
+&#39; Return Value:
+&#39;   True if successful.
+&#39;   False if failure.
+&#39;
+&#39; Subject may not be an empty string.
+&#39; FromAddress must be a valid email address.
+&#39; ToAddress must be a valid email address. To send to multiple recipients,
+&#39; use a semi-colon to separate the individual addresses. If there is a
+&#39; failure in one address, processing terminates and messages are not
+&#39; send to the rest of the recipients.
+&#39; If MailBody is vbNullString and BodyFileName is an existing text file, the content
+&#39; of the file named by BodyFileName is put into the body of the email. If
+&#39; BodyFileName does not exist, the function returns False. The content of
+&#39; the message body is created by a line-by-line import from BodyFileName.
+&#39; If MailBody is not vbNullString, then BodyFileName is ignored and the body
+&#39; is not created from the file.
+&#39; SMTP_Server must be a valid accessable SMTP server name.
+&#39; If both MailBody and BodyFileName are vbNullString, the mail message is
+&#39; sent with no body content.
+&#39; Attachments can be either a single file name as a String or an array of
+&#39; file names. If an attachment file does not exist, it is skipped but
+&#39; does not cause the procedure to terminate.
+&#39;
+&#39; If you want to send ThisWorkbook as an attachment to the message, use code
+&#39; like the following:
+&#39;    ThisWorkbook.Save
+&#39;    ThisWorkbook.ChangeFileAccess xlReadOnly
+&#39;    B = SendEmail( _
+&#39;        ... parameters ...
+&#39;        Attachments:=ThisWorkbook.FullName)
+&#39;    ThisWorkbook.ChangeFileAccess xlReadWrite
+&#39;
+&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;
+&#39; Required References:
+&#39; --------------------
+&#39;   Microsoft CDO for Windows 2000 Library
+&#39;       Typical File Location: C:\Windows\system32\cdosys.dll
+&#39;       GUID: {CD000000-8B95-11D1-82DB-00C04FB1625D}
+&#39;       Major: 1    Minor: 0
+&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;
+
+Dim MailMessage As CDO.Message
+Dim N As Long
+Dim FNum As Integer
+Dim S As String
+Dim Body As String
+Dim Recips() As String
+Dim Recip As String
+Dim NRecip As Long
+
+&#39; ensure required parameters are present and valid.
+If Len(Trim(Subject)) = 0 Then
+    SendEMail = False
+    Exit Function
+End If
+
+If Len(Trim(FromAddress)) = 0 Then
+    SendEMail = False
+    Exit Function
+End If
+
+If Len(Trim(SMTP_Server)) = 0 Then
+    SendEMail = False
+    Exit Function
+End If
+
+&#39; Clean up the addresses
+Recip = Replace(ToAddress, Space(1), vbNullString)
+If Right(Recip, 1) = &#34;;&#34; Then
+    Recip = Left(Recip, Len(Recip) - 1)
+End If
+Recips = Split(Recip, &#34;;&#34;)
+
+
+For NRecip = LBound(Recips) To UBound(Recips)
+    On Error Resume Next
+    &#39; Create a CDO Message object.
+    Set MailMessage = CreateObject(&#34;CDO.Message&#34;)
+    If Err.Number &amp;lt;&gt; 0 Then
+        SendEMail = False
+        Exit Function
+    End If
+    Err.Clear
+    On Error GoTo 0
+    With MailMessage
+        .Subject = Subject
+        .From = FromAddress
+        .To = Recips(NRecip)
+        If MailBody &amp;lt;&gt; vbNullString Then
+            .TextBody = MailBody
+        Else
+            If BodyFileName &amp;lt;&gt; vbNullString Then
+                If Dir(BodyFileName, vbNormal) &amp;lt;&gt; vbNullString Then
+                    &#39; import the text of the body from file BodyFileName
+                    FNum = FreeFile
+                    S = vbNullString
+                    Body = vbNullString
+                    Open BodyFileName For Input Access Read As #FNum
+                    Do Until EOF(FNum)
+                        Line Input #FNum, S
+                        Body = Body &amp; vbNewLine &amp; S
+                    Loop
+                    Close #FNum
+                    .TextBody = Body
+                Else
+                    &#39; BodyFileName not found.
+                    SendEMail = False
+                    Exit Function
+                End If
+            End If &#39; MailBody and BodyFileName are both vbNullString.
+        End If
+        
+        If IsArray(Attachments) = True Then
+            &#39; attach all the files in the array.
+            For N = LBound(Attachments) To UBound(Attachments)
+                &#39; ensure the attachment file exists and attach it.
+                If Attachments(N) &amp;lt;&gt; vbNullString Then
+                    If Dir(Attachments(N), vbNormal) &amp;lt;&gt; vbNullString Then
+                        .AddAttachment Attachments(N)
+                    End If
+                End If
+            Next N
+        Else
+            &#39; ensure the file exists and if so, attach it to the message.
+            If Attachments &amp;lt;&gt; vbNullString Then
+                If Dir(CStr(Attachments), vbNormal) &amp;lt;&gt; vbNullString Then
+                    .AddAttachment Attachments
+                End If
+            End If
+        End If
+        With .Configuration.Fields
+            &#39; set up the SMTP configuration
+            .Item(&#34;http://schemas.microsoft.com/cdo/configuration/sendusing&#34;) = 2
+            .Item(&#34;http://schemas.microsoft.com/cdo/configuration/smtpserver&#34;) = SMTP_Server
+            .Item(&#34;http://schemas.microsoft.com/cdo/configuration/smtpserverport&#34;) = 25
+            .Update
+        End With
+        
+        On Error Resume Next
+        Err.Clear
+        &#39; Send the message
+        .Send
+        If Err.Number = 0 Then
+            SendEMail = True
+        Else
+            SendEMail = False
+            Exit Function
+        End If
+    End With
+Next NRecip
+SendEMail = True
+End Function
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;If you want to attach the workbook that contains the code, you need to make the file read-only when you send it and then change access back to read-write. For example,&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;ThisWorkbook.Save
+ThisWorkbook.ChangeFileAccess xlReadOnly
+B = SendEmail( _
+    ... parameters ...
+    Attachments:=ThisWorkbook.FullName)
+ThisWorkbook.ChangeFileAccess xlReadWrite
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The function returns True if successful or False if an error occurred.&lt;/p&gt;
+
+&lt;p&gt;The code requires a reference to Microsoft CDO for Windows 2000 Library. The typical file location of this file is C:\Windows\system32\cdosys.dll. The GUID of this component is {CD000000-8B95-11D1-82DB-00C04FB1625D}, with Major = 1 and Minor = 0.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Free Excel Tool - XLLoop</title>
+      <link>http://www.exceltoolset.com/free-excel-tool-xlloop/</link>
+      <pubDate>Tue, 20 Sep 2011 01:10:04 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/free-excel-tool-xlloop/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;About XLLoop&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;XLLoop is an open source framework for implementing Excel user-defined functions (UDFs) on a centralised server (a function server).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Why is this useful?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Functions can be written in any language (e.g. Java, Javascript, Ruby, Python, Erlang etc..)&lt;/p&gt;
+
+&lt;p&gt;Functions can be added quickly and dynamically without users having to restart Excel.&lt;/p&gt;
+
+&lt;p&gt;Functions can be managed separately and centrally, which avoids the costly overhead of managing many XLLs and ensures all users are using the same functions.&lt;/p&gt;
+
+&lt;p&gt;Data can be shared across excel sessions/users (e.g. current stock market prices can be stored on a single server and all Excel sessions could retrieve this data via a GetStock function).&lt;/p&gt;
+
+&lt;p&gt;It has the following features:&lt;/p&gt;
+
+&lt;p&gt;Extensible Java server framework.&lt;/p&gt;
+
+&lt;p&gt;Native server frameworks written in many other languages (see languages section).&lt;/p&gt;
+
+&lt;p&gt;Popup for long running operations (with option to cancel)&lt;/p&gt;
+
+&lt;p&gt;Support for hosting C++ XLLs via JXLL.&lt;/p&gt;
+
+&lt;p&gt;Reflection-based function adaptor for extremely quick deployment of java methods.&lt;/p&gt;
+
+&lt;p&gt;Bean scripting framework adaptor so functions can be written in any BSF-supported language (eg. Ruby, Python, Javascript).&lt;/p&gt;
+
+&lt;p&gt;Lisp Function Handler for evaluating Lisp expressions on the fly.&lt;/p&gt;
+
+&lt;p&gt;Functions can be dynamically added to Excel without restart.&lt;/p&gt;
+
+&lt;p&gt;Functions can be registered as Excel functions (with help information).&lt;/p&gt;
+
+&lt;p&gt;Fast binary protocol with multiple-server fail-over/scalability.&lt;/p&gt;
+
+&lt;p&gt;JSON over HTTP(S) protocol&lt;/p&gt;
+
+&lt;p&gt;NEW: Can be configured to connect to multiple function servers (providers)&lt;/p&gt;
+
+&lt;p&gt;XLLoop consists of two main components:&lt;/p&gt;
+
+&lt;p&gt;An Excel addin implementation (XLL written in c++).&lt;/p&gt;
+
+&lt;p&gt;A server and framework written in java (and in many other languages &amp;#8211; see languages section).&lt;/p&gt;
+
+&lt;p&gt;The addin and server communicate via a simple socket-based protocol, sending and receiving (binary) serialised excel objects (called xlopers).&lt;/p&gt;
+
+&lt;p&gt;In JSON mode the addin and server communicate over http(s), sending and receiving JSON serialised excel objects.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt;:[download id=&amp;#8221;3&amp;#8243;]&lt;/p&gt;
+
+&lt;p&gt;The project is host on [&lt;a href=&#34;http://xlloop.sourceforge.net&#34; target=&#34;_blank&#34;&gt;&lt;a href=&#34;http://xlloop.sourceforge.net&#34;&gt;http://xlloop.sourceforge.net&lt;/a&gt;&lt;/a&gt;]&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Get A Specific Element In The Text String With VBA</title>
+      <link>http://www.exceltoolset.com/get-a-specific-element-in-the-text-string-with-vba/</link>
+      <pubDate>Wed, 11 May 2011 23:09:11 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/get-a-specific-element-in-the-text-string-with-vba/</guid>
+      <description>&lt;p&gt;Often, data is stored in a single worksheet cell consisting of several values, separated by some delimiter. For example, a cell may contain Abby,Barb,Carrie,Dawn, a list of names separated by commas. How should we get a specific element in the text string?&lt;/p&gt;
+
+&lt;p&gt;We can using VBA Split function for the puporse. In the following function, the parameter S is the string to search, Delim is the &lt;strong&gt;delimiter&lt;/strong&gt; character, and Ordinal indicates which text element to return.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function GetElement(S As String, Delim As String, _
+        Ordinal As Long) As Variant
+    Dim SS() As String
+    If Len(S) = 0 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If Len(Delim) &amp;amp;lt;&amp;gt; 1 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If InStr(1, S, Delim) = 0 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If Ordinal &amp;amp;lt;= 0 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If Ordinal &amp;gt; Len(S) - Len(Replace(S, Delim, vbNullString)) + 1 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    SS = Split(S, Delim)
+    GetElement = SS(Ordinal - 1)
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Create A Linkable Hot Image</title>
+      <link>http://www.exceltoolset.com/how-to-create-a-linkable-hot-image/</link>
+      <pubDate>Tue, 22 Mar 2011 11:26:08 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-create-a-linkable-hot-image/</guid>
+      <description>&lt;p&gt;You might have noticed that some Web sites feature an hot image map to help navigate the site. An image map is a single image, but it&amp;#8217;s sensitive to the location at which you click it on hot area. This tip demonstrates how to create a &lt;strong&gt;linkable hot image&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;To create an image map, you must be familiar with the MouseOver event. This event is triggered whenever the mouse pointer moves over a particular control. In this case, the control is an Image control. Basically, this event lets you determine the horizontal and vertical coordinates of the mouse pointer, relative to the control.&lt;/p&gt;
+
+&lt;p&gt;Setting up the image map simply involves monitoring the mouse position, and taking the appropriate action if the control is clicked. The VBA code is shown below. Every mouse movement over the Image control triggers the &lt;strong&gt;MouseMove&lt;/strong&gt; event and executes the Image1_MouseMove subroutine. The mouse coordinates are passed to the subroutine via the X and Y arguments. A series of Select Case statements determines which flag is under the mouse pointer, and stores the country name in the Country variable. I also display the country in the status bar. Obviously, it will take some work to figure out the coordinates, and you&amp;#8217;ll probably want to use an image in which the &amp;#8220;subimages&amp;#8221; are rectangular.&lt;/p&gt;
+
+&lt;p&gt;When the image is clicked, the Image1_Click subroutine is executed. This subroutine simply activates a worksheet, the name of which is stored in the Country variable. The worksheets are named for the countries represented by the flags.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;VBA Code&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;In this example, the Image control is placed on a worksheet named Menu. Therefore, this code resides in the code module for the Menu sheet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Public Country As String
+
+Private Sub Image1_MouseMove(ByVal Button As Integer, _
+  ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Select Case Y &#39;Vertical coordinate
+        Case Is &amp;lt; 2 &#39;Off the map
+            Country = &amp;quot;&amp;quot;
+        Case Is &amp;lt; 47
+            Select Case X &#39;Horizontal coordinate
+                Case Is &amp;lt; 2: Country = &amp;quot;&amp;quot;
+                Case Is &amp;lt; 78: Country = &amp;quot;United States&amp;quot;
+
+                Case Is &amp;lt; 152: Country = &amp;quot;Canada&amp;quot;
+                Case Else: Country = &amp;quot;&amp;quot; &#39;Off the map
+            End Select
+        Case Is &amp;lt; 87
+            Select Case X &#39;Horizontal coordinate
+                Case Is &amp;lt; 2: Country = &amp;quot;&amp;quot;
+                Case Is &amp;lt; 40: Country = &amp;quot;&amp;quot;
+
+                Case Is &amp;lt; 112: Country = &amp;quot;Cuba&amp;quot;
+                Case Else: Country = &amp;quot;&amp;quot; &#39;Off the map
+            End Select
+        Case Is &amp;lt; 133
+            Select Case X &#39;Horizontal coordinate
+                Case Is &amp;lt; 2: Country = &amp;quot;&amp;quot;
+                Case Is &amp;lt; 78: Country = &amp;quot;Mexico&amp;quot;
+
+                Case Is &amp;lt; 152: Country = &amp;quot;Puerto Rico&amp;quot;
+                Case Else: Country = &amp;quot;&amp;quot; &#39;Off the map
+            End Select
+        Case Else &#39;Off the map
+            Country = &amp;quot;&amp;quot;
+    End Select
+&#39;   The statement below was used while figuring out the coordinates
+&#39;   Application.StatusBar = Country &amp;amp; &amp;quot; &amp;quot; &amp;amp; X &amp;amp; &amp;quot; &amp;quot; &amp;amp; Y
+    Application.StatusBar = Country
+End Sub
+
+Private Sub Image1_Click()
+    If Country &amp;lt;&amp;gt; &amp;quot;&amp;quot; Then Sheets(Country).Activate
+&#39;   Reset the status bar
+    Application.StatusBar = False
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; Another way to create an image map is to insert transparent objects over the image, and create event-handler subroutines for the objects.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Free Excel Tool - VB Template Engine</title>
+      <link>http://www.exceltoolset.com/free-excel-tool-vb-template-engine/</link>
+      <pubDate>Sat, 13 Nov 2010 02:17:19 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/free-excel-tool-vb-template-engine/</guid>
+      <description>&lt;p&gt;MiniTemplator is a mini VB Template Engine.&lt;/p&gt;
+
+&lt;p&gt;MiniTemplator is a compact template engine for HTML files. It&amp;#8217;s available in Java, PHP and Visual Basic (VB/VBA). It uses a simple syntax for template variables and blocks, supports nested blocks and is implemented as a single code module.&lt;/p&gt;
+
+&lt;p&gt;[download id=&amp;#8221;2&amp;#8243;]&lt;/p&gt;
+
+&lt;p&gt;The project comes from [&lt;a href=&#34;http://sourceforge.net/projects/minitemplator/&#34;&gt;http://sourceforge.net/projects/minitemplator/&lt;/a&gt;].&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Highlight Entire Current Row And Column In Excel</title>
+      <link>http://www.exceltoolset.com/how-to-highlight-entire-current-row-and-column-in-excel/</link>
+      <pubDate>Tue, 09 Nov 2010 06:02:45 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-highlight-entire-current-row-and-column-in-excel/</guid>
+      <description>&lt;p&gt;How can I use VBA or conditional formatting to highlight the entire current row and column of the current cell?&lt;/p&gt;
+
+&lt;p&gt;In your sheets worksheets selection change event, you can use something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+
+    Const HIGHLIGHT_COLOR As Long = 4
+
+    &#39;remove past colors
+    ActiveSheet.Cells.Interior.ColorIndex = xlNone
+
+    With Me
+        .Columns(Target.Column).Interior.ColorIndex = HIGHLIGHT_COLOR
+        .Rows(Target.Row).Interior.ColorIndex = HIGHLIGHT_COLOR
+    End With
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here&amp;#8217;s one way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;ActiveSheet.Rows(ActiveCell.Row).Interior.Color = RGB(r, g, b)
+ActiveSheet.Columns(ActiveCell.Column).Interior.Color = RGB(r, g, b)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can fill in r,g &amp;amp; b to achieve the highlighting color you want. If you use Interior.Color, you can use the vbColor constants instead of RGB values if you like. vbRed, vbGreen, vbYellow, etc.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Get The Data Type Of A Cell In Excel</title>
+      <link>http://www.exceltoolset.com/how-to-get-the-data-type-of-a-cell-in-excel/</link>
+      <pubDate>Sun, 07 Nov 2010 02:47:25 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-get-the-data-type-of-a-cell-in-excel/</guid>
+      <description>&lt;p&gt;In some situations you may need to determine the type of data in a cell. Excel provides a number of built-in functions that can help. These include ISTEXT, ISLOGICAL, and ISERROR. In addition, VBA includes functions such as IsEmpty, IsDate, and IsNumeric.&lt;/p&gt;
+
+&lt;p&gt;The CellType function (VBA code is listed below) accepts a range argument and returns a string that describes the data type of the upper left cell in the range. The function returns one of the following strings: Blank, Text, Logical, Error, Date, Time, or Value.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The CellType function&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function CellType(c)
+&#39;   Returns the cell type of the upper left
+&#39;   cell in a range
+    Application.Volatile
+    Set c = c.Range(&amp;quot;A1&amp;quot;)
+    Select Case True
+        Case IsEmpty(c): CellType = &amp;quot;Blank&amp;quot;
+        Case Application.IsText(c): CellType = &amp;quot;Text&amp;quot;
+        Case Application.IsLogical(c): CellType = &amp;quot;Logical&amp;quot;
+        Case Application.IsErr(c): CellType = &amp;quot;Error&amp;quot;
+        Case IsDate(c): CellType = &amp;quot;Date&amp;quot;
+        Case InStr(1, c.Text, &amp;quot;:&amp;quot;) &amp;amp;lt;&amp;gt; 0: CellType = &amp;quot;Time&amp;quot;
+        Case IsNumeric(c): CellType = &amp;quot;Value&amp;quot;
+    End Select
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Using the CellType function&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;To use this function in a worskheet, just copy the code and paste it to a module. Then, you can enter a formula such as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;=CellType(A1)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Determine The Type Of A Particular Drive Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-determine-the-type-of-a-particular-drive-using-vba/</link>
+      <pubDate>Fri, 05 Nov 2010 00:32:17 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-determine-the-type-of-a-particular-drive-using-vba/</guid>
+      <description>&lt;p&gt;This article contains a VBA function that uses the Windows GetDriveType API function to determine the type of a particular drive.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Declare Function GetDriveType Lib &amp;quot;kernel32&amp;quot; _
+  Alias &amp;quot;GetDriveTypeA&amp;quot; (ByVal nDrive As String) As Long
+
+Function DriveType(DriveLetter As String) As String
+&#39;  Returns a string that describes the type of drive of DriveLetter
+   DriveLetter = Left(DriveLetter, 1) &amp;amp; &amp;quot;:\&amp;quot;
+   Select Case GetDriveType(DriveLetter)
+      Case 0: DriveType = &amp;quot;Unknown&amp;quot;
+      Case 1: DriveType = &amp;quot;Non-existent&amp;quot;
+      Case 2: DriveType = &amp;quot;Removable drive&amp;quot;
+      Case 3: DriveType = &amp;quot;Fixed drive&amp;quot;
+      Case 4: DriveType = &amp;quot;Network drive&amp;quot;
+      Case 5: DriveType = &amp;quot;CD-ROM drive&amp;quot;
+      Case 6: DriveType = &amp;quot;RAM disk&amp;quot;
+      Case Else: DriveType = &amp;quot;Unknown drive type&amp;quot;
+  End Select
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The function accepts a drive letter, and returns a string that describes the type of drive. Network drives must be mapped to a single-letter drive designator.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The example below lists all drives, and their type. The information is sent to columns A and B of the active worksheet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub ShowAllDrives()
+    Dim LetterCode As Long
+    Dim Row As Long
+    Dim DT As String
+    Row = 1
+    For LetterCode = 65 To 90 &#39; A-Z
+        DT = DriveType(Chr(LetterCode))
+        If DT &amp;amp;lt;&amp;gt; &amp;quot;Non-existent&amp;quot; Then
+            Cells(Row, 1) = Chr(LetterCode) &amp;amp; &amp;quot;:\&amp;quot;
+            Cells(Row, 2) = DT
+            Row = Row + 1
+        End If
+    Next LetterCode
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Get The Computer Name Or Logged-in User Name Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-get-the-computer-name-or-logged-in-user-name-using-vba/</link>
+      <pubDate>Thu, 04 Nov 2010 04:04:40 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-get-the-computer-name-or-logged-in-user-name-using-vba/</guid>
+      <description>&lt;p&gt;This article uses two Windows API functions to return the name of the computer, and the name of the user who is currently logged in. These functions can be used in a worksheet formula, or called from a VBA procedure.&lt;/p&gt;
+
+&lt;p&gt;NOTE: The logged-in user name may or may not be the name that is returned by Application.User&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;VBA source code&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Declare Function GetComputerName Lib &amp;quot;kernel32&amp;quot; _
+  Alias &amp;quot;GetComputerNameA&amp;quot; (ByVal lpBuffer As String, nSize As Long) _
+  As Long
+
+Private Declare Function GetUserName Lib &amp;quot;advapi32.dll&amp;quot; _
+Alias &amp;quot;GetUserNameA&amp;quot; (ByVal lpBuffer As String, nSize As Long) _
+  As Long
+The Functions
+
+Public Function NameOfComputer()
+&#39;   Returns the name of the computer
+    Dim ComputerName As String
+    Dim ComputerNameLen As Long
+    Dim Result As Long
+    ComputerNameLen = 256
+    ComputerName = Space(ComputerNameLen)
+    Result = GetComputerName(ComputerName, ComputerNameLen)
+    If Result &amp;amp;lt;&amp;gt; 0 Then
+        NameOfComputer = Left(ComputerName, ComputerNameLen)
+    Else
+        NameOfComputer = &amp;quot;Unknown&amp;quot;
+    End If
+End Function
+
+Function UserName() As String
+&#39;   Returns the name of the logged-in user
+    Dim Buffer As String * 100
+    Dim BuffLen As Long
+    BuffLen = 100
+    GetUserName Buffer, BuffLen
+    UserName = Left(Buffer, BuffLen - 1)
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Making A Single Worksheet Function Act Like Multiple Functions</title>
+      <link>http://www.exceltoolset.com/making-a-single-worksheet-function-act-like-multiple-functions/</link>
+      <pubDate>Tue, 02 Nov 2010 23:07:25 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/making-a-single-worksheet-function-act-like-multiple-functions/</guid>
+      <description>&lt;p&gt;This article describes a technique that may be helpful in some situations &amp;#8211; making a single worksheet function act like multiple functions. For example, the VBA listing below is for a custom function called StatFunction. It takes two arguments: the range (rng), and the operation (op). Depending on the value of op, the function will return any of the following: AVERAGE, COUNT, MAX, MEDIAN, MIN, MODE, STDEV, SUM, or VAR.&lt;/p&gt;
+
+&lt;p&gt;For example, you can use this function in your worksheet as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;=STATFUNCTION(B1:B24,A24) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The result of the formula depends on the contents of cell A24 &amp;#8212; which should be a string such as Average, Count, Max, etc. You can adapt this technique for other types of functions.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The StatFunction Function&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function STATFUNCTION(rng, op)
+    Select Case UCase(op)
+        Case &amp;quot;SUM&amp;quot;
+            STATFUNCTION = Application.Sum(rng)
+        Case &amp;quot;AVERAGE&amp;quot;
+            STATFUNCTION = Application.Average(rng)
+        Case &amp;quot;MEDIAN&amp;quot;
+            STATFUNCTION = Application.Median(rng)
+        Case &amp;quot;MODE&amp;quot;
+            STATFUNCTION = Application.Mode(rng)
+        Case &amp;quot;COUNT&amp;quot;
+            STATFUNCTION = Application.Count(rng)
+        Case &amp;quot;MAX&amp;quot;
+            STATFUNCTION = Application.Max(rng)
+        Case &amp;quot;MIN&amp;quot;
+            STATFUNCTION = Application.Min(rng)
+        Case &amp;quot;VAR&amp;quot;
+            STATFUNCTION = Application.Var(rng)
+        Case &amp;quot;STDEV&amp;quot;
+            STATFUNCTION = Application.StDev(rng)
+        Case Else
+            STATFUNCTION = Evaluate(&amp;quot;NA()&amp;quot;)
+    End Select
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Getting Coefficients Of Chart Trendline</title>
+      <link>http://www.exceltoolset.com/getting-coefficients-of-chart-trendline/</link>
+      <pubDate>Mon, 01 Nov 2010 01:18:12 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/getting-coefficients-of-chart-trendline/</guid>
+      <description>&lt;p&gt;When you add a trendline to a chart, Excel provides an option to display the trendline equation in the chart. This article describes how to create formulas that generate the trendline coefficients. You can then use these formulas to calculate predicted y values for give values of x.&lt;/p&gt;
+
+&lt;p&gt;These equations assume that your sheet has two named ranges: x and y.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Linear Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = m * x + b&lt;/p&gt;
+
+&lt;p&gt;m: =SLOPE(y,x)&lt;/p&gt;
+
+&lt;p&gt;b: =INTERCEPT(y,x)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Logarithmic Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = (c * LN(x)) + b&lt;/p&gt;
+
+&lt;p&gt;c: =INDEX(LINEST(y,LN(x)),1)&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(y,LN(x)),1,2)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Power Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y=c*x^b&lt;/p&gt;
+
+&lt;p&gt;c: =EXP(INDEX(LINEST(LN(y),LN(x),,),1,2))&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(LN(y),LN(x),,),1)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Exponential Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = c *e ^(b * x)&lt;/p&gt;
+
+&lt;p&gt;c: =EXP(INDEX(LINEST(LN(y),x),1,2))&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(LN(y),x),1)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2nd Order Polynomial Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = (c2 * x^2) + (c1 * x ^1) + b&lt;/p&gt;
+
+&lt;p&gt;c2: =INDEX(LINEST(y,x^{1,2}),1)&lt;/p&gt;
+
+&lt;p&gt;C1: =INDEX(LINEST(y,x^{1,2}),1,2)&lt;/p&gt;
+
+&lt;p&gt;b = =INDEX(LINEST(y,x^{1,2}),1,3)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3rd Order Polynomial Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = (c3 * x^3) + (c2 * x^2) + (c1 * x^1) + b&lt;/p&gt;
+
+&lt;p&gt;c3: =INDEX(LINEST(y,x^{1,2,3}),1)&lt;/p&gt;
+
+&lt;p&gt;c2: =INDEX(LINEST(y,x^{1,2,3}),1,2)&lt;/p&gt;
+
+&lt;p&gt;C1: =INDEX(LINEST(y,x^{1,2,3}),1,3)&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(y,x^{1,2,3}),1,4)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Higher Order Polynomial Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Notice the pattern in the two preceding sets of formulas.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Simple VBA Function For Testing A FileName Is Valid</title>
+      <link>http://www.exceltoolset.com/a-simple-vba-function-for-testing-a-filename-is-valid/</link>
+      <pubDate>Sat, 30 Oct 2010 11:03:59 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/a-simple-vba-function-for-testing-a-filename-is-valid/</guid>
+      <description>&lt;p&gt;Sometimes we save a file, but it returns &amp;#8220;Illegal Windows filename characters&amp;#8221; error.&lt;/p&gt;
+
+&lt;p&gt;Maybe we need a robust and simple way to remove illegal path and file characters from a simple string.&lt;/p&gt;
+
+&lt;p&gt;How check if given string is legal (allowed) file name under Windows?&lt;/p&gt;
+
+&lt;p&gt;A simple VBA function is given to do this, and the code is following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function IsValidFileName(sFileName As String) As Boolean
+    Dim lstIllegal As Variant
+    Dim i As Long
+    Dim result As Boolean
+    
+    lstIllegal = Array(&amp;quot;/&amp;quot;, &amp;quot;\&amp;quot;, &amp;quot;:&amp;quot;, &amp;quot;*&amp;quot;, &amp;quot;?&amp;quot;, &amp;quot;&amp;amp;lt; &amp;quot;, &amp;quot;&amp;gt;&amp;quot;, &amp;quot;|&amp;quot;, &amp;quot;&amp;quot;&amp;quot;&amp;quot;)
+    result = True
+    
+    For i = LBound(lstIllegal) To UBound(lstIllegal)
+        If InStr(1, sFileName, lstIllegal(i)) &amp;gt; 0 Then
+            result = False
+            Exit Function
+        End If
+    Next i
+    IsValidFileName = result
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Create DSN For ODBC Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-create-dsn-for-odbc-using-vba/</link>
+      <pubDate>Fri, 29 Oct 2010 23:24:34 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-create-dsn-for-odbc-using-vba/</guid>
+      <description>&lt;p&gt;This article describes a VBA function that will Create DSN For ODBC. The VBA function use API function SQLConfigDataSource to do this. Then you can create DSN for ODBC in your code.&lt;/p&gt;
+
+&lt;p&gt;The VBA code is bellow.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Const REG_SZ = 1
+Private Const KEY_ALL_ACCESS = &amp;amp;H2003F
+Private Const HKEY_CURRENT_USER = &amp;amp;H80000001
+Private Const ODBC_ADD_DSN = 1
+Private Const ODBC_REMOVE_DSN = 3
+
+Private Declare Function RegCloseKey Lib &amp;quot;advapi32&amp;quot; ( _
+  ByVal hKey As Long) As Long
+Private Declare Function RegOpenKeyEx Lib &amp;quot;advapi32&amp;quot; _
+  Alias &amp;quot;RegOpenKeyExA&amp;quot; ( _
+  ByVal hKey As Long, _
+  ByVal lpSubKey As String, _
+  ByVal ulOptions As Long, _
+  ByVal samDesired As Long, _
+  ByRef phkResult As Long) As Long
+Private Declare Function RegQueryValueEx Lib &amp;quot;advapi32&amp;quot; _
+  Alias &amp;quot;RegQueryValueExA&amp;quot; ( _
+  ByVal hKey As Long, _
+  ByVal lpValueName As String, _
+  ByVal lpReserved As Long, _
+  ByRef lpType As Long, _
+  ByVal lpData As String, _
+  ByRef lpcbData As Long) As Long
+Private Declare Function SQLConfigDataSource Lib &amp;quot;ODBCCP32.DLL&amp;quot; ( _
+  ByVal hwndParent As Long, _
+  ByVal fRequest As Long, _
+  ByVal lpszDriver As String, _
+  ByVal lpszAttributes As String) As Long
+
+Public Sub DSN( _
+  ByVal sDSN As String, _
+  ByVal sDriver As String, _
+  ByVal sServer As String, _
+  ByVal sBD As String, _
+  ByVal lAction As Long)
+  Dim sAttributes As String
+  Dim sDBQ As String
+  Dim lngRet As Long
+  
+  Dim hKey As Long
+  Dim regValue As String
+  Dim valueType As Long
+
+  If RegOpenKeyEx(HKEY_CURRENT_USER, &amp;quot;Software\ODBC\ODBC.INI\&amp;quot; &amp;amp; sDSN, _
+                         0, KEY_ALL_ACCESS, hKey) = 0 Then
+    regValue = String$(1024, 0)
+    If RegQueryValueEx(hKey, &amp;quot;DBQ&amp;quot;, 0, valueType, _
+                               regValue, Len(regValue)) = 0 Then
+      If valueType = REG_SZ Then sDBQ = Left$(regValue, InStr(regValue, vbNullChar) - 1)
+    End If
+    RegCloseKey hKey
+  End If
+  
+  If (sDBQ = &amp;quot;&amp;quot; And lAction = ODBC_ADD_DSN) _
+    Or (sDBQ &amp;amp;lt;&amp;gt; &amp;quot;&amp;quot; And lAction = ODBC_REMOVE_DSN) Then
+    sAttributes = &amp;quot;DSN=&amp;quot; &amp;amp; sDSN &amp;amp; vbNullChar _
+               &amp;amp; &amp;quot;Server=&amp;quot; &amp;amp; sServer &amp;amp; vbNullChar &amp;amp; _
+               &amp;quot;Database=&amp;quot; &amp;amp; sBD &amp;amp; vbNullChar &amp;amp; &amp;quot;Trusted_Connection=Yes&amp;quot;
+    lngRet = SQLConfigDataSource(0&amp;amp;, lAction, sDriver, sAttributes)
+  End If
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Create A Splash Screen For An Excel Workbook</title>
+      <link>http://www.exceltoolset.com/how-to-create-a-splash-screen-for-an-excel-workbook/</link>
+      <pubDate>Thu, 28 Oct 2010 23:01:54 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-create-a-splash-screen-for-an-excel-workbook/</guid>
+      <description>&lt;p&gt;This article describes how to create a splash screen for a Excel workbook. A splash screen appears when the workbook is opened and disappears automatically after a specific time has elapsed.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Setting it up&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Follow these instructions to create a splash screen for your project.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Create your workbook as usual.&lt;/li&gt;
+&lt;li&gt;Activate the Visual Basic Editor and insert a new UserForm into the project. The code here assumes this form is named UserForm1.&lt;/li&gt;
+&lt;li&gt;Place any controls you like on UserForm1. For example, you may want to insert an Image control that has your company&amp;#8217;s logo. Also, you may want to set the UserForm&amp;#8217;s Caption property to an empty string.&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Insert the following subroutine into the code module for the ThisWorkbook object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
+UserForm1.Show
+End Sub
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Insert the following subroutine into the code module for UserForm1:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub UserForm_Activate()
+Application.OnTime Now + TimeValue(&amp;quot;00:00:05&amp;quot;), &amp;quot;KillTheForm&amp;quot;
+End Sub  
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Insert the following subroutine into a normal VBA module:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub KillTheForm()
+Unload UserForm1
+End Sub
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;How it works&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;When the workbook is opened, the Workbook_Open subroutine is executed. This subroutine displays the UserForm. When the UserForm is displayed, it&amp;#8217;s Activate event occurs &amp;#8211; which triggers the UserForm_Activate subroutine. This subroutine uses the OnTime method of the Application object to execute a subroutine (named KillTheForm) at a particular time. In this case, the time is five seconds from the current time (change this interval by modifying the argument for the TimeValue function). The KillTheForm subroutine simply unloads the UserForm.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Track Who Opens A Workbook And At What Time</title>
+      <link>http://www.exceltoolset.com/track-who-opens-a-workbook-and-at-what-time/</link>
+      <pubDate>Thu, 28 Oct 2010 10:59:43 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/track-who-opens-a-workbook-and-at-what-time/</guid>
+      <description>&lt;p&gt;This article describes how to create a usage log that keeps track who opens a workbook, and at what time.&lt;/p&gt;
+
+&lt;p&gt;If a workbook&amp;#8217;s ThisWorkbook code module contains a procedure named Workbook_Open, that procedure is executed whenever the workbook is opened. Add the following procedure to the ThisWorkbook code module.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
+    Open ThisWorkbook.Path &amp;amp; &amp;quot;\usage.log&amp;quot; For Append As #1
+    Print #1, Application.UserName, Now
+    Close #1
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When this procedure is executed, it appends the user name and the current date/time to a text file. The file is stored in the workbook&amp;#8217;s directory, and is named usage.log. If the text file does not exist, it is created. You can, of course, change the code so the text file is written to a different directory.&lt;/p&gt;
+
+&lt;p&gt;NOTE: Keep in mind that this procedure is not executed if the workbook is opened with macros disabled.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

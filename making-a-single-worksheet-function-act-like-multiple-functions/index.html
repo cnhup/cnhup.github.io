@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <title>Making A Single Worksheet Function Act Like Multiple Functions - Excel Tools | Excel Tool Set</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+  
+  <meta name="description" content="This article describes a technique that may be helpful in some situations &#8211; making a single worksheet function act like multiple functions. For example, the VBA listing below is for a custom function called StatFunction. It takes two arguments: the range (rng), and the operation (op). Depending on the value of op, the function will return any of the following: AVERAGE, COUNT, MAX, MEDIAN, MIN, MODE, STDEV, SUM, or VAR.
+">
+  <meta name="author" content="exceltoolset">
+  <meta itemprop="name" content="Making A Single Worksheet Function Act Like Multiple Functions - Excel Tools | Excel Tool Set">
+  <meta itemprop="description" content="This article describes a technique that may be helpful in some situations &#8211; making a single worksheet function act like multiple functions. For example, the VBA listing below is for a custom function called StatFunction. It takes two arguments: the range (rng), and the operation (op). Depending on the value of op, the function will return any of the following: AVERAGE, COUNT, MAX, MEDIAN, MIN, MODE, STDEV, SUM, or VAR.
+">
+  <meta itemprop="image" content="http://www.exceltoolset.com/img/author.jpg">
+  
+  
+  <meta name="twitter:description" content="">
+  
+  <link rel="shortcut icon" href="http://www.exceltoolset.com/img/favicon.ico"/>
+  <link rel="apple-touch-icon" href="http://www.exceltoolset.com/apple-touch-icon.png" />
+  <link rel="apple-touch-icon-precomposed" href="http://www.exceltoolset.com/apple-touch-icon.png" />
+
+  
+  <link rel="stylesheet" href="http://www.exceltoolset.com/prism/prism.css">
+  <script src="http://www.exceltoolset.com/prism/prism.js"></script>
+
+  <link rel="stylesheet" href="http://www.exceltoolset.com/font/hack/css/hack.min.css">
+  <link rel="stylesheet" href="http://www.exceltoolset.com/css/style.css">
+</head>
+
+<body>
+  <header>
+    <div>
+  
+  <div id="textlogo">
+    <h1 class="site-name"><a href="http://www.exceltoolset.com/" title="Excel Tools | Excel Tool Set">Excel Tools | Excel Tool Set</a></h1>
+    <h2 class="blog-motto"></h2>
+  </div>
+  <div class="navbar"><a class="navbutton navmobile" href="#" title="menu"></a></div>
+  <nav class="animated">
+    <ul>
+      
+      <li>
+        
+      </li>
+    </ul>
+  </nav>
+</div>
+
+  </header>
+  <div id="container">
+    <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+      <a href="http://www.exceltoolset.com/making-a-single-worksheet-function-act-like-multiple-functions/" title="Making A Single Worksheet Function Act Like Multiple Functions" itemprop="url">Making A Single Worksheet Function Act Like Multiple Functions</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="" title="exceltoolset">exceltoolset</a>
+    
+  </p>
+  <p class="article-time">
+    <time datetime="2010-11-02 23:07:25 &#43;0000 &#43;0000" itemprop="datePublished">
+	<div class="article-content">
+    
+    <p>This article describes a technique that may be helpful in some situations &#8211; making a single worksheet function act like multiple functions. For example, the VBA listing below is for a custom function called StatFunction. It takes two arguments: the range (rng), and the operation (op). Depending on the value of op, the function will return any of the following: AVERAGE, COUNT, MAX, MEDIAN, MIN, MODE, STDEV, SUM, or VAR.</p>
+
+<p>For example, you can use this function in your worksheet as follows:</p>
+
+<pre><code class="language-basic">=STATFUNCTION(B1:B24,A24) 
+</code></pre>
+
+<p>The result of the formula depends on the contents of cell A24 &#8212; which should be a string such as Average, Count, Max, etc. You can adapt this technique for other types of functions.</p>
+
+<p><strong>The StatFunction Function</strong></p>
+
+<pre><code class="language-basic">Function STATFUNCTION(rng, op)
+    Select Case UCase(op)
+        Case &quot;SUM&quot;
+            STATFUNCTION = Application.Sum(rng)
+        Case &quot;AVERAGE&quot;
+            STATFUNCTION = Application.Average(rng)
+        Case &quot;MEDIAN&quot;
+            STATFUNCTION = Application.Median(rng)
+        Case &quot;MODE&quot;
+            STATFUNCTION = Application.Mode(rng)
+        Case &quot;COUNT&quot;
+            STATFUNCTION = Application.Count(rng)
+        Case &quot;MAX&quot;
+            STATFUNCTION = Application.Max(rng)
+        Case &quot;MIN&quot;
+            STATFUNCTION = Application.Min(rng)
+        Case &quot;VAR&quot;
+            STATFUNCTION = Application.Var(rng)
+        Case &quot;STDEV&quot;
+            STATFUNCTION = Application.StDev(rng)
+        Case Else
+            STATFUNCTION = Evaluate(&quot;NA()&quot;)
+    End Select
+End Function
+</code></pre>
+
+<p>From: <a href="http://spreadsheetpage.com">http://spreadsheetpage.com</a></p>
+
+	</div>
+  <footer class="article-footer clearfix">
+  
+
+
+
+<div class="article-categories">
+  <span></span>
+  
+  <a class="article-category-link" href="http://www.exceltoolset.com/categories/vba-functions">VBA Functions</a>
+  
+</div>
+
+
+
+  <div class="article-share" id="share">
+    <div data-url="http://www.exceltoolset.com/making-a-single-worksheet-function-act-like-multiple-functions/" data-title="Making A Single Worksheet Function Act Like Multiple Functions" data-tsina="" class="share clearfix">
+    </div>
+  </div>
+</footer>
+
+	</article>
+  
+
+
+
+</div>
+
+    <div class="openaside"><a class="navbutton" href="#" title=""></a></div>
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title=""></a></div>
+<aside class="clearfix">
+  
+
+<div class="categorieslist">
+  <p class="asidetitle"></p>
+  <ul>
+    
+    <li><a href="http://www.exceltoolset.com/categories/excel-articles" title="excel-articles">excel-articles</a></li>
+    
+    <li><a href="http://www.exceltoolset.com/categories/excel-tools" title="excel-tools">excel-tools</a></li>
+    
+    <li><a href="http://www.exceltoolset.com/categories/vba-functions" title="vba-functions">vba-functions</a></li>
+    
+  </ul>
+</div>
+
+
+
+  
+
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"></p>
+    <ul class="archive-list">
+      
+  
+
+
+
+  
+
+</aside>
+</div>
+
+  </div>
+  <footer><div id="footer" >
+  
+  
+  <div class="social-font clearfix">
+    
+    
+    
+    
+    
+  </div>
+  <p class="copyright"> © 2016
+    
+    <a href="http://www.exceltoolset.com/" target="_blank" title="exceltoolset">exceltoolset</a>
+    
+  </p>
+</div>
+</footer>
+  <script src="http://www.exceltoolset.com/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+done = false;
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  $('form.search').on('submit', function (event) {
+    if (false === done) {
+      event.preventDefault();
+      var orgVal = $(this).find('#search').val();
+      $(this).find('#search').val('site:http:\/\/www.exceltoolset.com\/ ' + orgVal);
+      done = true;
+      $(this).submit();
+    }
+  });
+});
+</script>
+
+
+
+
+
+
+</body>
+</html>

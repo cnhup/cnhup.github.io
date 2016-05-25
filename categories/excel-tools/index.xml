@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Excel Tools on Excel Tools | Excel Tool Set</title>
+    <link>http://www.exceltoolset.com/categories/excel-tools/</link>
+    <description>Recent content in Excel Tools on Excel Tools | Excel Tool Set</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 20 Sep 2011 01:10:04 +0000</lastBuildDate>
+    <atom:link href="http://www.exceltoolset.com/categories/excel-tools/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Free Excel Tool - XLLoop</title>
+      <link>http://www.exceltoolset.com/free-excel-tool-xlloop/</link>
+      <pubDate>Tue, 20 Sep 2011 01:10:04 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/free-excel-tool-xlloop/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;About XLLoop&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;XLLoop is an open source framework for implementing Excel user-defined functions (UDFs) on a centralised server (a function server).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Why is this useful?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Functions can be written in any language (e.g. Java, Javascript, Ruby, Python, Erlang etc..)&lt;/p&gt;
+
+&lt;p&gt;Functions can be added quickly and dynamically without users having to restart Excel.&lt;/p&gt;
+
+&lt;p&gt;Functions can be managed separately and centrally, which avoids the costly overhead of managing many XLLs and ensures all users are using the same functions.&lt;/p&gt;
+
+&lt;p&gt;Data can be shared across excel sessions/users (e.g. current stock market prices can be stored on a single server and all Excel sessions could retrieve this data via a GetStock function).&lt;/p&gt;
+
+&lt;p&gt;It has the following features:&lt;/p&gt;
+
+&lt;p&gt;Extensible Java server framework.&lt;/p&gt;
+
+&lt;p&gt;Native server frameworks written in many other languages (see languages section).&lt;/p&gt;
+
+&lt;p&gt;Popup for long running operations (with option to cancel)&lt;/p&gt;
+
+&lt;p&gt;Support for hosting C++ XLLs via JXLL.&lt;/p&gt;
+
+&lt;p&gt;Reflection-based function adaptor for extremely quick deployment of java methods.&lt;/p&gt;
+
+&lt;p&gt;Bean scripting framework adaptor so functions can be written in any BSF-supported language (eg. Ruby, Python, Javascript).&lt;/p&gt;
+
+&lt;p&gt;Lisp Function Handler for evaluating Lisp expressions on the fly.&lt;/p&gt;
+
+&lt;p&gt;Functions can be dynamically added to Excel without restart.&lt;/p&gt;
+
+&lt;p&gt;Functions can be registered as Excel functions (with help information).&lt;/p&gt;
+
+&lt;p&gt;Fast binary protocol with multiple-server fail-over/scalability.&lt;/p&gt;
+
+&lt;p&gt;JSON over HTTP(S) protocol&lt;/p&gt;
+
+&lt;p&gt;NEW: Can be configured to connect to multiple function servers (providers)&lt;/p&gt;
+
+&lt;p&gt;XLLoop consists of two main components:&lt;/p&gt;
+
+&lt;p&gt;An Excel addin implementation (XLL written in c++).&lt;/p&gt;
+
+&lt;p&gt;A server and framework written in java (and in many other languages &amp;#8211; see languages section).&lt;/p&gt;
+
+&lt;p&gt;The addin and server communicate via a simple socket-based protocol, sending and receiving (binary) serialised excel objects (called xlopers).&lt;/p&gt;
+
+&lt;p&gt;In JSON mode the addin and server communicate over http(s), sending and receiving JSON serialised excel objects.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Download&lt;/strong&gt;:[download id=&amp;#8221;3&amp;#8243;]&lt;/p&gt;
+
+&lt;p&gt;The project is host on [&lt;a href=&#34;http://xlloop.sourceforge.net&#34; target=&#34;_blank&#34;&gt;&lt;a href=&#34;http://xlloop.sourceforge.net&#34;&gt;http://xlloop.sourceforge.net&lt;/a&gt;&lt;/a&gt;]&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Free Excel Tool - VB Template Engine</title>
+      <link>http://www.exceltoolset.com/free-excel-tool-vb-template-engine/</link>
+      <pubDate>Sat, 13 Nov 2010 02:17:19 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/free-excel-tool-vb-template-engine/</guid>
+      <description>&lt;p&gt;MiniTemplator is a mini VB Template Engine.&lt;/p&gt;
+
+&lt;p&gt;MiniTemplator is a compact template engine for HTML files. It&amp;#8217;s available in Java, PHP and Visual Basic (VB/VBA). It uses a simple syntax for template variables and blocks, supports nested blocks and is implemented as a single code module.&lt;/p&gt;
+
+&lt;p&gt;[download id=&amp;#8221;2&amp;#8243;]&lt;/p&gt;
+
+&lt;p&gt;The project comes from [&lt;a href=&#34;http://sourceforge.net/projects/minitemplator/&#34;&gt;http://sourceforge.net/projects/minitemplator/&lt;/a&gt;].&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Free Excel Tool - JSON Parser For VBA</title>
+      <link>http://www.exceltoolset.com/free-excel-tool-json-parser-for-vba/</link>
+      <pubDate>Wed, 27 Oct 2010 08:50:43 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/free-excel-tool-json-parser-for-vba/</guid>
+      <description>&lt;p&gt;vba-json is a &lt;a href=&#34;http://www.json.org&#34;&gt;JSON&lt;/a&gt; parser for VBA.
+vba-json&amp;rsquo;s feature is as follows :&lt;/p&gt;
+
+&lt;p&gt;parse JSON and create Dictionary/Collection&lt;/p&gt;
+
+&lt;p&gt;serialize Dictionary/Collection as JSON&lt;/p&gt;
+
+&lt;p&gt;Download: [download id=&amp;#8221;1&amp;#8243;]&lt;/p&gt;
+
+&lt;p&gt;The project is host on &lt;a href=&#34;http://code.google.com/p/vba-json/&#34;&gt;http://code.google.com/p/vba-json/&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

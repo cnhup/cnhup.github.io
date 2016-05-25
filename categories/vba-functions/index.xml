@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vba Functions on Excel Tools | Excel Tool Set</title>
+    <link>http://www.exceltoolset.com/categories/vba-functions/</link>
+    <description>Recent content in Vba Functions on Excel Tools | Excel Tool Set</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 31 May 2014 01:38:01 +0000</lastBuildDate>
+    <atom:link href="http://www.exceltoolset.com/categories/vba-functions/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Sending EMail With VBA</title>
+      <link>http://www.exceltoolset.com/sending-email-with-vba/</link>
+      <pubDate>Sat, 31 May 2014 01:38:01 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/sending-email-with-vba/</guid>
+      <description>&lt;p&gt;It is not difficult to add the ability to send email from your application. If all you want to do is send the workbook, with just a subject but no content, you can use ThisWorkbook.SendMail. However, if you want to include text in the body of the message or include additional files as attachments, you need some VBA code. The page describes a function called &lt;strong&gt;SendEmail&lt;/strong&gt; that wraps up the details in a nice, VBA-friendly function.&lt;/p&gt;
+
+&lt;p&gt;The code is shown below.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: vb&#34;&gt;&lt;code class=&#34;language-basic&#34;&gt;Function SendEMail(Subject As String, _
+        FromAddress As String, _
+        ToAddress As String, _
+        MailBody As String, _
+        SMTP_Server As String, _
+        BodyFileName As String, _
+        Optional Attachments As Variant = Empty) As Boolean
+&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;
+&#39; SendEmail Function
+&#39; By Chip Pearson, chip@cpearson.com www.cpearson.com 28-June-2012
+&#39;
+&#39; This function sends an email to the specified user.
+&#39; Parameters:
+&#39;   Subject:        The subject of the email.
+&#39;   FromAddress:    The sender&#39;s email address
+&#39;   ToAddress:      The recipient&#39;s email address or addresses.
+&#39;   MailBody:       The body of the email.
+&#39;   SMTP_Server:    The SMTP-Server name for outgoing mail.
+&#39;   BodyFileName:   A text file containing the body of the email.
+&#39;   Attachments     A single file name or an array of file names to
+&#39;                   attach to the message. The files must exist.
+&#39; Return Value:
+&#39;   True if successful.
+&#39;   False if failure.
+&#39;
+&#39; Subject may not be an empty string.
+&#39; FromAddress must be a valid email address.
+&#39; ToAddress must be a valid email address. To send to multiple recipients,
+&#39; use a semi-colon to separate the individual addresses. If there is a
+&#39; failure in one address, processing terminates and messages are not
+&#39; send to the rest of the recipients.
+&#39; If MailBody is vbNullString and BodyFileName is an existing text file, the content
+&#39; of the file named by BodyFileName is put into the body of the email. If
+&#39; BodyFileName does not exist, the function returns False. The content of
+&#39; the message body is created by a line-by-line import from BodyFileName.
+&#39; If MailBody is not vbNullString, then BodyFileName is ignored and the body
+&#39; is not created from the file.
+&#39; SMTP_Server must be a valid accessable SMTP server name.
+&#39; If both MailBody and BodyFileName are vbNullString, the mail message is
+&#39; sent with no body content.
+&#39; Attachments can be either a single file name as a String or an array of
+&#39; file names. If an attachment file does not exist, it is skipped but
+&#39; does not cause the procedure to terminate.
+&#39;
+&#39; If you want to send ThisWorkbook as an attachment to the message, use code
+&#39; like the following:
+&#39;    ThisWorkbook.Save
+&#39;    ThisWorkbook.ChangeFileAccess xlReadOnly
+&#39;    B = SendEmail( _
+&#39;        ... parameters ...
+&#39;        Attachments:=ThisWorkbook.FullName)
+&#39;    ThisWorkbook.ChangeFileAccess xlReadWrite
+&#39;
+&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;
+&#39; Required References:
+&#39; --------------------
+&#39;   Microsoft CDO for Windows 2000 Library
+&#39;       Typical File Location: C:\Windows\system32\cdosys.dll
+&#39;       GUID: {CD000000-8B95-11D1-82DB-00C04FB1625D}
+&#39;       Major: 1    Minor: 0
+&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;
+
+Dim MailMessage As CDO.Message
+Dim N As Long
+Dim FNum As Integer
+Dim S As String
+Dim Body As String
+Dim Recips() As String
+Dim Recip As String
+Dim NRecip As Long
+
+&#39; ensure required parameters are present and valid.
+If Len(Trim(Subject)) = 0 Then
+    SendEMail = False
+    Exit Function
+End If
+
+If Len(Trim(FromAddress)) = 0 Then
+    SendEMail = False
+    Exit Function
+End If
+
+If Len(Trim(SMTP_Server)) = 0 Then
+    SendEMail = False
+    Exit Function
+End If
+
+&#39; Clean up the addresses
+Recip = Replace(ToAddress, Space(1), vbNullString)
+If Right(Recip, 1) = &#34;;&#34; Then
+    Recip = Left(Recip, Len(Recip) - 1)
+End If
+Recips = Split(Recip, &#34;;&#34;)
+
+
+For NRecip = LBound(Recips) To UBound(Recips)
+    On Error Resume Next
+    &#39; Create a CDO Message object.
+    Set MailMessage = CreateObject(&#34;CDO.Message&#34;)
+    If Err.Number &amp;lt;&gt; 0 Then
+        SendEMail = False
+        Exit Function
+    End If
+    Err.Clear
+    On Error GoTo 0
+    With MailMessage
+        .Subject = Subject
+        .From = FromAddress
+        .To = Recips(NRecip)
+        If MailBody &amp;lt;&gt; vbNullString Then
+            .TextBody = MailBody
+        Else
+            If BodyFileName &amp;lt;&gt; vbNullString Then
+                If Dir(BodyFileName, vbNormal) &amp;lt;&gt; vbNullString Then
+                    &#39; import the text of the body from file BodyFileName
+                    FNum = FreeFile
+                    S = vbNullString
+                    Body = vbNullString
+                    Open BodyFileName For Input Access Read As #FNum
+                    Do Until EOF(FNum)
+                        Line Input #FNum, S
+                        Body = Body &amp; vbNewLine &amp; S
+                    Loop
+                    Close #FNum
+                    .TextBody = Body
+                Else
+                    &#39; BodyFileName not found.
+                    SendEMail = False
+                    Exit Function
+                End If
+            End If &#39; MailBody and BodyFileName are both vbNullString.
+        End If
+        
+        If IsArray(Attachments) = True Then
+            &#39; attach all the files in the array.
+            For N = LBound(Attachments) To UBound(Attachments)
+                &#39; ensure the attachment file exists and attach it.
+                If Attachments(N) &amp;lt;&gt; vbNullString Then
+                    If Dir(Attachments(N), vbNormal) &amp;lt;&gt; vbNullString Then
+                        .AddAttachment Attachments(N)
+                    End If
+                End If
+            Next N
+        Else
+            &#39; ensure the file exists and if so, attach it to the message.
+            If Attachments &amp;lt;&gt; vbNullString Then
+                If Dir(CStr(Attachments), vbNormal) &amp;lt;&gt; vbNullString Then
+                    .AddAttachment Attachments
+                End If
+            End If
+        End If
+        With .Configuration.Fields
+            &#39; set up the SMTP configuration
+            .Item(&#34;http://schemas.microsoft.com/cdo/configuration/sendusing&#34;) = 2
+            .Item(&#34;http://schemas.microsoft.com/cdo/configuration/smtpserver&#34;) = SMTP_Server
+            .Item(&#34;http://schemas.microsoft.com/cdo/configuration/smtpserverport&#34;) = 25
+            .Update
+        End With
+        
+        On Error Resume Next
+        Err.Clear
+        &#39; Send the message
+        .Send
+        If Err.Number = 0 Then
+            SendEMail = True
+        Else
+            SendEMail = False
+            Exit Function
+        End If
+    End With
+Next NRecip
+SendEMail = True
+End Function
+&lt;/code&gt;
+&lt;/pre&gt;
+
+&lt;p&gt;If you want to attach the workbook that contains the code, you need to make the file read-only when you send it and then change access back to read-write. For example,&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;ThisWorkbook.Save
+ThisWorkbook.ChangeFileAccess xlReadOnly
+B = SendEmail( _
+    ... parameters ...
+    Attachments:=ThisWorkbook.FullName)
+ThisWorkbook.ChangeFileAccess xlReadWrite
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The function returns True if successful or False if an error occurred.&lt;/p&gt;
+
+&lt;p&gt;The code requires a reference to Microsoft CDO for Windows 2000 Library. The typical file location of this file is C:\Windows\system32\cdosys.dll. The GUID of this component is {CD000000-8B95-11D1-82DB-00C04FB1625D}, with Major = 1 and Minor = 0.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Get A Specific Element In The Text String With VBA</title>
+      <link>http://www.exceltoolset.com/get-a-specific-element-in-the-text-string-with-vba/</link>
+      <pubDate>Wed, 11 May 2011 23:09:11 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/get-a-specific-element-in-the-text-string-with-vba/</guid>
+      <description>&lt;p&gt;Often, data is stored in a single worksheet cell consisting of several values, separated by some delimiter. For example, a cell may contain Abby,Barb,Carrie,Dawn, a list of names separated by commas. How should we get a specific element in the text string?&lt;/p&gt;
+
+&lt;p&gt;We can using VBA Split function for the puporse. In the following function, the parameter S is the string to search, Delim is the &lt;strong&gt;delimiter&lt;/strong&gt; character, and Ordinal indicates which text element to return.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function GetElement(S As String, Delim As String, _
+        Ordinal As Long) As Variant
+    Dim SS() As String
+    If Len(S) = 0 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If Len(Delim) &amp;amp;lt;&amp;gt; 1 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If InStr(1, S, Delim) = 0 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If Ordinal &amp;amp;lt;= 0 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    If Ordinal &amp;gt; Len(S) - Len(Replace(S, Delim, vbNullString)) + 1 Then
+        GetElement = CVErr(xlErrNA)
+        Exit Function
+    End If
+    SS = Split(S, Delim)
+    GetElement = SS(Ordinal - 1)
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Get The Data Type Of A Cell In Excel</title>
+      <link>http://www.exceltoolset.com/how-to-get-the-data-type-of-a-cell-in-excel/</link>
+      <pubDate>Sun, 07 Nov 2010 02:47:25 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-get-the-data-type-of-a-cell-in-excel/</guid>
+      <description>&lt;p&gt;In some situations you may need to determine the type of data in a cell. Excel provides a number of built-in functions that can help. These include ISTEXT, ISLOGICAL, and ISERROR. In addition, VBA includes functions such as IsEmpty, IsDate, and IsNumeric.&lt;/p&gt;
+
+&lt;p&gt;The CellType function (VBA code is listed below) accepts a range argument and returns a string that describes the data type of the upper left cell in the range. The function returns one of the following strings: Blank, Text, Logical, Error, Date, Time, or Value.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The CellType function&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function CellType(c)
+&#39;   Returns the cell type of the upper left
+&#39;   cell in a range
+    Application.Volatile
+    Set c = c.Range(&amp;quot;A1&amp;quot;)
+    Select Case True
+        Case IsEmpty(c): CellType = &amp;quot;Blank&amp;quot;
+        Case Application.IsText(c): CellType = &amp;quot;Text&amp;quot;
+        Case Application.IsLogical(c): CellType = &amp;quot;Logical&amp;quot;
+        Case Application.IsErr(c): CellType = &amp;quot;Error&amp;quot;
+        Case IsDate(c): CellType = &amp;quot;Date&amp;quot;
+        Case InStr(1, c.Text, &amp;quot;:&amp;quot;) &amp;amp;lt;&amp;gt; 0: CellType = &amp;quot;Time&amp;quot;
+        Case IsNumeric(c): CellType = &amp;quot;Value&amp;quot;
+    End Select
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Using the CellType function&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;To use this function in a worskheet, just copy the code and paste it to a module. Then, you can enter a formula such as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;=CellType(A1)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Determine The Type Of A Particular Drive Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-determine-the-type-of-a-particular-drive-using-vba/</link>
+      <pubDate>Fri, 05 Nov 2010 00:32:17 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-determine-the-type-of-a-particular-drive-using-vba/</guid>
+      <description>&lt;p&gt;This article contains a VBA function that uses the Windows GetDriveType API function to determine the type of a particular drive.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Declare Function GetDriveType Lib &amp;quot;kernel32&amp;quot; _
+  Alias &amp;quot;GetDriveTypeA&amp;quot; (ByVal nDrive As String) As Long
+
+Function DriveType(DriveLetter As String) As String
+&#39;  Returns a string that describes the type of drive of DriveLetter
+   DriveLetter = Left(DriveLetter, 1) &amp;amp; &amp;quot;:\&amp;quot;
+   Select Case GetDriveType(DriveLetter)
+      Case 0: DriveType = &amp;quot;Unknown&amp;quot;
+      Case 1: DriveType = &amp;quot;Non-existent&amp;quot;
+      Case 2: DriveType = &amp;quot;Removable drive&amp;quot;
+      Case 3: DriveType = &amp;quot;Fixed drive&amp;quot;
+      Case 4: DriveType = &amp;quot;Network drive&amp;quot;
+      Case 5: DriveType = &amp;quot;CD-ROM drive&amp;quot;
+      Case 6: DriveType = &amp;quot;RAM disk&amp;quot;
+      Case Else: DriveType = &amp;quot;Unknown drive type&amp;quot;
+  End Select
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The function accepts a drive letter, and returns a string that describes the type of drive. Network drives must be mapped to a single-letter drive designator.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The example below lists all drives, and their type. The information is sent to columns A and B of the active worksheet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub ShowAllDrives()
+    Dim LetterCode As Long
+    Dim Row As Long
+    Dim DT As String
+    Row = 1
+    For LetterCode = 65 To 90 &#39; A-Z
+        DT = DriveType(Chr(LetterCode))
+        If DT &amp;amp;lt;&amp;gt; &amp;quot;Non-existent&amp;quot; Then
+            Cells(Row, 1) = Chr(LetterCode) &amp;amp; &amp;quot;:\&amp;quot;
+            Cells(Row, 2) = DT
+            Row = Row + 1
+        End If
+    Next LetterCode
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Get The Computer Name Or Logged-in User Name Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-get-the-computer-name-or-logged-in-user-name-using-vba/</link>
+      <pubDate>Thu, 04 Nov 2010 04:04:40 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-get-the-computer-name-or-logged-in-user-name-using-vba/</guid>
+      <description>&lt;p&gt;This article uses two Windows API functions to return the name of the computer, and the name of the user who is currently logged in. These functions can be used in a worksheet formula, or called from a VBA procedure.&lt;/p&gt;
+
+&lt;p&gt;NOTE: The logged-in user name may or may not be the name that is returned by Application.User&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;VBA source code&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Declare Function GetComputerName Lib &amp;quot;kernel32&amp;quot; _
+  Alias &amp;quot;GetComputerNameA&amp;quot; (ByVal lpBuffer As String, nSize As Long) _
+  As Long
+
+Private Declare Function GetUserName Lib &amp;quot;advapi32.dll&amp;quot; _
+Alias &amp;quot;GetUserNameA&amp;quot; (ByVal lpBuffer As String, nSize As Long) _
+  As Long
+The Functions
+
+Public Function NameOfComputer()
+&#39;   Returns the name of the computer
+    Dim ComputerName As String
+    Dim ComputerNameLen As Long
+    Dim Result As Long
+    ComputerNameLen = 256
+    ComputerName = Space(ComputerNameLen)
+    Result = GetComputerName(ComputerName, ComputerNameLen)
+    If Result &amp;amp;lt;&amp;gt; 0 Then
+        NameOfComputer = Left(ComputerName, ComputerNameLen)
+    Else
+        NameOfComputer = &amp;quot;Unknown&amp;quot;
+    End If
+End Function
+
+Function UserName() As String
+&#39;   Returns the name of the logged-in user
+    Dim Buffer As String * 100
+    Dim BuffLen As Long
+    BuffLen = 100
+    GetUserName Buffer, BuffLen
+    UserName = Left(Buffer, BuffLen - 1)
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Making A Single Worksheet Function Act Like Multiple Functions</title>
+      <link>http://www.exceltoolset.com/making-a-single-worksheet-function-act-like-multiple-functions/</link>
+      <pubDate>Tue, 02 Nov 2010 23:07:25 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/making-a-single-worksheet-function-act-like-multiple-functions/</guid>
+      <description>&lt;p&gt;This article describes a technique that may be helpful in some situations &amp;#8211; making a single worksheet function act like multiple functions. For example, the VBA listing below is for a custom function called StatFunction. It takes two arguments: the range (rng), and the operation (op). Depending on the value of op, the function will return any of the following: AVERAGE, COUNT, MAX, MEDIAN, MIN, MODE, STDEV, SUM, or VAR.&lt;/p&gt;
+
+&lt;p&gt;For example, you can use this function in your worksheet as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;=STATFUNCTION(B1:B24,A24) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The result of the formula depends on the contents of cell A24 &amp;#8212; which should be a string such as Average, Count, Max, etc. You can adapt this technique for other types of functions.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The StatFunction Function&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function STATFUNCTION(rng, op)
+    Select Case UCase(op)
+        Case &amp;quot;SUM&amp;quot;
+            STATFUNCTION = Application.Sum(rng)
+        Case &amp;quot;AVERAGE&amp;quot;
+            STATFUNCTION = Application.Average(rng)
+        Case &amp;quot;MEDIAN&amp;quot;
+            STATFUNCTION = Application.Median(rng)
+        Case &amp;quot;MODE&amp;quot;
+            STATFUNCTION = Application.Mode(rng)
+        Case &amp;quot;COUNT&amp;quot;
+            STATFUNCTION = Application.Count(rng)
+        Case &amp;quot;MAX&amp;quot;
+            STATFUNCTION = Application.Max(rng)
+        Case &amp;quot;MIN&amp;quot;
+            STATFUNCTION = Application.Min(rng)
+        Case &amp;quot;VAR&amp;quot;
+            STATFUNCTION = Application.Var(rng)
+        Case &amp;quot;STDEV&amp;quot;
+            STATFUNCTION = Application.StDev(rng)
+        Case Else
+            STATFUNCTION = Evaluate(&amp;quot;NA()&amp;quot;)
+    End Select
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Simple VBA Function For Testing A FileName Is Valid</title>
+      <link>http://www.exceltoolset.com/a-simple-vba-function-for-testing-a-filename-is-valid/</link>
+      <pubDate>Sat, 30 Oct 2010 11:03:59 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/a-simple-vba-function-for-testing-a-filename-is-valid/</guid>
+      <description>&lt;p&gt;Sometimes we save a file, but it returns &amp;#8220;Illegal Windows filename characters&amp;#8221; error.&lt;/p&gt;
+
+&lt;p&gt;Maybe we need a robust and simple way to remove illegal path and file characters from a simple string.&lt;/p&gt;
+
+&lt;p&gt;How check if given string is legal (allowed) file name under Windows?&lt;/p&gt;
+
+&lt;p&gt;A simple VBA function is given to do this, and the code is following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function IsValidFileName(sFileName As String) As Boolean
+    Dim lstIllegal As Variant
+    Dim i As Long
+    Dim result As Boolean
+    
+    lstIllegal = Array(&amp;quot;/&amp;quot;, &amp;quot;\&amp;quot;, &amp;quot;:&amp;quot;, &amp;quot;*&amp;quot;, &amp;quot;?&amp;quot;, &amp;quot;&amp;amp;lt; &amp;quot;, &amp;quot;&amp;gt;&amp;quot;, &amp;quot;|&amp;quot;, &amp;quot;&amp;quot;&amp;quot;&amp;quot;)
+    result = True
+    
+    For i = LBound(lstIllegal) To UBound(lstIllegal)
+        If InStr(1, sFileName, lstIllegal(i)) &amp;gt; 0 Then
+            result = False
+            Exit Function
+        End If
+    Next i
+    IsValidFileName = result
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Create DSN For ODBC Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-create-dsn-for-odbc-using-vba/</link>
+      <pubDate>Fri, 29 Oct 2010 23:24:34 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-create-dsn-for-odbc-using-vba/</guid>
+      <description>&lt;p&gt;This article describes a VBA function that will Create DSN For ODBC. The VBA function use API function SQLConfigDataSource to do this. Then you can create DSN for ODBC in your code.&lt;/p&gt;
+
+&lt;p&gt;The VBA code is bellow.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Const REG_SZ = 1
+Private Const KEY_ALL_ACCESS = &amp;amp;H2003F
+Private Const HKEY_CURRENT_USER = &amp;amp;H80000001
+Private Const ODBC_ADD_DSN = 1
+Private Const ODBC_REMOVE_DSN = 3
+
+Private Declare Function RegCloseKey Lib &amp;quot;advapi32&amp;quot; ( _
+  ByVal hKey As Long) As Long
+Private Declare Function RegOpenKeyEx Lib &amp;quot;advapi32&amp;quot; _
+  Alias &amp;quot;RegOpenKeyExA&amp;quot; ( _
+  ByVal hKey As Long, _
+  ByVal lpSubKey As String, _
+  ByVal ulOptions As Long, _
+  ByVal samDesired As Long, _
+  ByRef phkResult As Long) As Long
+Private Declare Function RegQueryValueEx Lib &amp;quot;advapi32&amp;quot; _
+  Alias &amp;quot;RegQueryValueExA&amp;quot; ( _
+  ByVal hKey As Long, _
+  ByVal lpValueName As String, _
+  ByVal lpReserved As Long, _
+  ByRef lpType As Long, _
+  ByVal lpData As String, _
+  ByRef lpcbData As Long) As Long
+Private Declare Function SQLConfigDataSource Lib &amp;quot;ODBCCP32.DLL&amp;quot; ( _
+  ByVal hwndParent As Long, _
+  ByVal fRequest As Long, _
+  ByVal lpszDriver As String, _
+  ByVal lpszAttributes As String) As Long
+
+Public Sub DSN( _
+  ByVal sDSN As String, _
+  ByVal sDriver As String, _
+  ByVal sServer As String, _
+  ByVal sBD As String, _
+  ByVal lAction As Long)
+  Dim sAttributes As String
+  Dim sDBQ As String
+  Dim lngRet As Long
+  
+  Dim hKey As Long
+  Dim regValue As String
+  Dim valueType As Long
+
+  If RegOpenKeyEx(HKEY_CURRENT_USER, &amp;quot;Software\ODBC\ODBC.INI\&amp;quot; &amp;amp; sDSN, _
+                         0, KEY_ALL_ACCESS, hKey) = 0 Then
+    regValue = String$(1024, 0)
+    If RegQueryValueEx(hKey, &amp;quot;DBQ&amp;quot;, 0, valueType, _
+                               regValue, Len(regValue)) = 0 Then
+      If valueType = REG_SZ Then sDBQ = Left$(regValue, InStr(regValue, vbNullChar) - 1)
+    End If
+    RegCloseKey hKey
+  End If
+  
+  If (sDBQ = &amp;quot;&amp;quot; And lAction = ODBC_ADD_DSN) _
+    Or (sDBQ &amp;amp;lt;&amp;gt; &amp;quot;&amp;quot; And lAction = ODBC_REMOVE_DSN) Then
+    sAttributes = &amp;quot;DSN=&amp;quot; &amp;amp; sDSN &amp;amp; vbNullChar _
+               &amp;amp; &amp;quot;Server=&amp;quot; &amp;amp; sServer &amp;amp; vbNullChar &amp;amp; _
+               &amp;quot;Database=&amp;quot; &amp;amp; sBD &amp;amp; vbNullChar &amp;amp; &amp;quot;Trusted_Connection=Yes&amp;quot;
+    lngRet = SQLConfigDataSource(0&amp;amp;, lAction, sDriver, sAttributes)
+  End If
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Track Who Opens A Workbook And At What Time</title>
+      <link>http://www.exceltoolset.com/track-who-opens-a-workbook-and-at-what-time/</link>
+      <pubDate>Thu, 28 Oct 2010 10:59:43 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/track-who-opens-a-workbook-and-at-what-time/</guid>
+      <description>&lt;p&gt;This article describes how to create a usage log that keeps track who opens a workbook, and at what time.&lt;/p&gt;
+
+&lt;p&gt;If a workbook&amp;#8217;s ThisWorkbook code module contains a procedure named Workbook_Open, that procedure is executed whenever the workbook is opened. Add the following procedure to the ThisWorkbook code module.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
+    Open ThisWorkbook.Path &amp;amp; &amp;quot;\usage.log&amp;quot; For Append As #1
+    Print #1, Application.UserName, Now
+    Close #1
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When this procedure is executed, it appends the user name and the current date/time to a text file. The file is stored in the workbook&amp;#8217;s directory, and is named usage.log. If the text file does not exist, it is created. You can, of course, change the code so the text file is written to a different directory.&lt;/p&gt;
+
+&lt;p&gt;NOTE: Keep in mind that this procedure is not executed if the workbook is opened with macros disabled.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Select All Unlocked Cells Using VBA in Excel</title>
+      <link>http://www.exceltoolset.com/select-all-unlocked-cells-using-vba-in-excel/</link>
+      <pubDate>Wed, 27 Oct 2010 03:47:50 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/select-all-unlocked-cells-using-vba-in-excel/</guid>
+      <description>&lt;p&gt;As you probably know, when a worksheet is protected, only the unlocked cells can be changed. You may want to apply different formatting to the unlocked cells, or simply ensure that the correct cells are indeed unlocked.&lt;/p&gt;
+
+&lt;p&gt;Oddly, there is no direct way to quickly identify which cells are locked or unlocked. When the sheet is protected, you can use the Tab key to move among the unlocked cells, but it you would like to select them all you&amp;#8217;ll need a macro.&lt;/p&gt;
+
+&lt;p&gt;The VBA function listed below selects all unlocked cells on the active worksheet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub SelectUnlockedCells()
+    Dim WorkRange As Range
+    Dim FoundCells As Range
+    Dim Cell As Range
+    Set WorkRange = ActiveSheet.UsedRange
+    For Each Cell In WorkRange
+        If Cell.Locked = False Then
+            If FoundCells Is Nothing Then
+                Set FoundCells = Cell
+            Else
+                Set FoundCells = Union(FoundCells, Cell)
+            End If
+        End If
+    Next Cell
+    If FoundCells Is Nothing Then
+        MsgBox &amp;quot;All cells are locked.&amp;quot;
+    Else
+        FoundCells.Select
+    End If
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Get Temp File Name Using VBA</title>
+      <link>http://www.exceltoolset.com/how-to-get-temp-file-name-using-vba/</link>
+      <pubDate>Wed, 27 Oct 2010 02:03:37 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-get-temp-file-name-using-vba/</guid>
+      <description>&lt;p&gt;This page describes a VBA function that will return a Unique Temporary File Name. The VBA function use API to do this. You can also specify prefix or file extensions to include in the Temporary File Name.&lt;/p&gt;
+
+&lt;pre class=&#34;brush: vb&#34;&gt;Option Explicit
+
+Private Declare Function GetTempPath Lib &#34;kernel32&#34; _
+  Alias &#34;GetTempPathA&#34; _
+  (ByVal nBufferLength As Long, _
+  ByVal lpBuffer As String) As Long
+Private Declare Function GetTempFileName Lib &#34;kernel32&#34; _
+  Alias &#34;GetTempFileNameA&#34; _
+  (ByVal lpszPath As String, _
+  ByVal lpPrefixString As String, _
+  ByVal wUnique As Long, _
+  ByVal lpTempFileName As String) As Long
+
+Public Function Get_Temp_File_Name( _
+  Optional sPrefix As String = &#34;VBA&#34;, _
+  Optional sExtensao As String = &#34;&#34;) As String
+  Dim sTmpPath As String * 512
+  Dim sTmpName As String * 576
+  Dim nRet As Long
+  Dim F As String
+  nRet = GetTempPath(512, sTmpPath)
+  If (nRet &gt; 0 And nRet &amp;lt; 512) Then
+    nRet = GetTempFileName(sTmpPath, sPrefix, 0, sTmpName)
+    If nRet &amp;lt;&gt; 0 Then F = Left$(sTmpName, InStr(sTmpName, vbNullChar) - 1)
+    If sExtensao &gt; &#34;&#34; Then
+      Kill F
+      If Right(F, 4) = &#34;.tmp&#34; Then F = Left(F, Len(F) - 4)
+      F = F &amp; sExtensao
+    End If
+    Get_Temp_File_Name = F
+  End If
+End Function
+
+Sub Test_Get_Temp_File_Name()
+    Debug.Print Get_Temp_File_Name
+End Sub
+&lt;/pre&gt;
+
+&lt;p&gt;Run Test_Get_Temp_File_Name for test.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>VBA Function To Count Word Frequencies</title>
+      <link>http://www.exceltoolset.com/vba-function-to-count-word-frequencies/</link>
+      <pubDate>Tue, 26 Oct 2010 06:55:23 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/vba-function-to-count-word-frequencies/</guid>
+      <description>&lt;p&gt;This article describes a VBA function that analyzes a list of text, and counts the frequency of each word. The function works with any text. It assumes that the data begins in cell A1 of the active sheet, and the first blank cell in the column signals the end of the text.&lt;/p&gt;
+
+&lt;p&gt;The general approach is:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Add a new worksheet for the results&lt;/li&gt;
+&lt;li&gt;Remove all punctuation characters from the input text&lt;/li&gt;
+&lt;li&gt;Convert each word to upper case, and remove excess spaces&lt;/li&gt;
+&lt;li&gt;Loop through the input text and put each word in the results sheet&lt;/li&gt;
+&lt;li&gt;Create a pivot table that uses the word list and displays a frequency count for each word.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Here&amp;#8217;s the function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub CountWordFrequencies()
+    Dim InputSheet As Worksheet
+    Dim WordListSheet As Worksheet
+    Dim PuncChars As Variant, x As Variant
+    Dim i As Long, r As Long
+    Dim txt As String
+    Dim wordCnt As Long
+    Dim AllWords As Range
+    Dim PC As PivotCache
+    Dim PT As PivotTable
+    
+    Application.ScreenUpdating = False
+    Set InputSheet = ActiveSheet
+    Set WordListSheet = Worksheets.Add(after:=Worksheets(Sheets.Count))
+    WordListSheet.Range(&amp;quot;A1&amp;quot;) = &amp;quot;All Words&amp;quot;
+    WordListSheet.Range(&amp;quot;A1&amp;quot;).Font.Bold = True
+    InputSheet.Activate
+    wordCnt = 2
+    PuncChars = Array(&amp;quot;.&amp;quot;, &amp;quot;,&amp;quot;, &amp;quot;;&amp;quot;, &amp;quot;:&amp;quot;, &amp;quot;&#39;&amp;quot;, &amp;quot;!&amp;quot;, &amp;quot;#&amp;quot;, _
+        &amp;quot;$&amp;quot;, &amp;quot;%&amp;quot;, &amp;quot;&amp;amp;&amp;quot;, &amp;quot;(&amp;quot;, &amp;quot;)&amp;quot;, &amp;quot; - &amp;quot;, &amp;quot;_&amp;quot;, &amp;quot;--&amp;quot;, &amp;quot;+&amp;quot;, _
+        &amp;quot;=&amp;quot;, &amp;quot;~&amp;quot;, &amp;quot;/&amp;quot;, &amp;quot;\&amp;quot;, &amp;quot;{&amp;quot;, &amp;quot;}&amp;quot;, &amp;quot;[&amp;quot;, &amp;quot;]&amp;quot;, &amp;quot;&amp;quot;&amp;quot;&amp;quot;, &amp;quot;?&amp;quot;, &amp;quot;*&amp;quot;)
+    r = 1
+
+&#39;   Loop until blank cell is encountered
+    Do While Cells(r, 1) &amp;amp;lt;&amp;gt; &amp;quot;&amp;quot;
+&#39;       covert to UPPERCASE
+        txt = UCase(Cells(r, 1))
+&#39;       Remove punctuation
+        For i = 0 To UBound(PuncChars)
+            txt = Replace(txt, PuncChars(i), &amp;quot;&amp;quot;)
+        Next i
+&#39;       Remove excess spaces
+        txt = WorksheetFunction.Trim(txt)
+&#39;       Extract the words
+        x = Split(txt)
+        For i = 0 To UBound(x)
+            WordListSheet.Cells(wordCnt, 1) = x(i)
+            wordCnt = wordCnt + 1
+        Next i
+    r = r + 1
+    Loop
+    
+&#39;   Create pivot table
+    WordListSheet.Activate
+    Set AllWords = Range(&amp;quot;A1&amp;quot;).CurrentRegion
+    Set PC = ActiveWorkbook.PivotCaches.Add _
+        (SourceType:=xlDatabase, _
+        SourceData:=AllWords)
+    Set PT = PC.CreatePivotTable _
+        (TableDestination:=Range(&amp;quot;C1&amp;quot;), _
+        TableName:=&amp;quot;PivotTable1&amp;quot;)
+    With PT
+        .AddDataField .PivotFields(&amp;quot;All Words&amp;quot;)
+        .PivotFields(&amp;quot;All Words&amp;quot;).Orientation = xlRowField
+    End With
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Two Functions For Testing A Specified Word Is Contained In A Text String</title>
+      <link>http://www.exceltoolset.com/two-functions-for-testing-a-specified-word-is-contained-in-a-text-string/</link>
+      <pubDate>Mon, 25 Oct 2010 01:33:43 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/two-functions-for-testing-a-specified-word-is-contained-in-a-text-string/</guid>
+      <description>&lt;p&gt;Here&amp;#8217;s a VBA function that might be useful in some situations.&lt;/p&gt;
+
+&lt;p&gt;The IsWordInString functions returns True if a specified word is contained in a text string.&lt;/p&gt;
+
+&lt;p&gt;You might think that this function is just a variation on Excel&amp;#8217;s FIND function or VBA&amp;#8217;s Instr function. There&amp;#8217;s a subtle difference. The &lt;strong&gt;IsWordInString&lt;/strong&gt; function looks for a complete word &amp;#8212; not text that might be part of a different word.&lt;/p&gt;
+
+&lt;p&gt;The examples in the accompanying figure should clarify how this function works.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;=IsWordInString(&amp;quot;Million of innocent rats are trapped--quarterly!&amp;quot;,&amp;quot;trap&amp;quot;) &#39;return False
+=IsWordInString(&amp;quot;Million of innocent rats are trapped--quarterly!&amp;quot;,&amp;quot;trapped&amp;quot;) &#39;return True
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The function identifies the complete word trapped, but not the word trap, which is part of trapped. Also, note that a space is not required after a word in order to identify it as a word. For example, the word can be followed by a punctuation mark.&lt;/p&gt;
+
+&lt;p&gt;The function, listed below, modified the first argument (Text) and replaces all non-alpha characters with a space character. It then adds a leading and trailing space to both arguments. Finally, it uses the Instr function to determine if the modified Word argument is present in the modified Text argument.&lt;/p&gt;
+
+&lt;p&gt;To use this function in a formula, just copy and paste it to a VBA module in your workbook.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;A clear function for testing a specified word is contained in a text string&lt;/strong&gt;:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function IsWordInString(Text As String, Word As String) As Boolean
+&#39;   Returns TRUE if Word is contained in Text as an exact word match
+    Dim i As Long
+    Const Space As String = &amp;quot; &amp;quot;
+    Text = UCase(Text)
+&#39;   Replace non-text characters with a space
+    For i = 0 To 64
+        Text = Replace(Text, Chr(i), Space)
+    Next i
+    For i = 91 To 255
+        Text = Replace(Text, Chr(i), Space)
+    Next i
+&#39;   Add initial and final space to Text &amp;amp; Word
+    Text = Space &amp;amp; Text &amp;amp; Space
+    Word = UCase(Space &amp;amp; Word &amp;amp; Space)
+    ExactWordInString = InStr(Text, Word) &amp;amp;lt;&amp;gt; 0
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;A much simpler function that produces the same result&lt;/strong&gt;. In fact, it uses just one statement:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Function IsWordInString(Text As String, Word As String) As Boolean
+  ExactWordInString = &amp;quot; &amp;quot; &amp;amp; UCase(Text) &amp;amp; &amp;quot; &amp;quot; Like &amp;quot;*[!A-Z]&amp;quot; &amp;amp; UCase(Word) &amp;amp; &amp;quot;[!A-Z]*&amp;quot;
+End Function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;em&gt;spreadsheetpage.com&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using VBA to Send a text file to a server via FTP in Excel</title>
+      <link>http://www.exceltoolset.com/using-vba-to-send-a-text-file-to-a-server-via-ftp-in-excel/</link>
+      <pubDate>Sun, 24 Oct 2010 13:45:53 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/using-vba-to-send-a-text-file-to-a-server-via-ftp-in-excel/</guid>
+      <description>&lt;p&gt;I have an Excel worksheet where the user enters certain data, which I want to store in a text file and upload to a server using FTP. Does anyone know of a solution for this problem?&lt;/p&gt;
+
+&lt;p&gt;The following VBA code is one solution for this problem.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Public Sub SendFileViaFTP()
+    Dim vPath As String
+    Dim vFile As String
+    Dim vFTPServ As String
+    Dim fNum As Long
+
+    vPath = ThisWorkbook.Path
+    vFile = &amp;quot;YourFile.csv&amp;quot;
+    vFTPServ = &amp;quot;**&amp;quot;
+
+    &#39;Mounting file command for ftp.exe
+    fNum = FreeFile()
+    Open vPath &amp;amp; &amp;quot;\FtpComm.txt&amp;quot; For Output As #fNum
+    Print #1, &amp;quot;user ****&amp;quot;       &#39; your login and password&amp;quot;
+    Print #1, &amp;quot;cd TargetDir&amp;quot;    &#39;change to dir on server
+    Print #1, &amp;quot;bin&amp;quot;    &#39; bin or ascii file type to send
+    Print #1, &amp;quot;put &amp;quot; &amp;amp; vPath &amp;amp; &amp;quot;\&amp;quot; &amp;amp; vFile &amp;amp; &amp;quot; &amp;quot; &amp;amp; vFile    &#39; upload local filename to server file
+    Print #1, &amp;quot;close&amp;quot;    &#39; Close connection
+    Print #1, &amp;quot;quit&amp;quot;    &#39; Quit FTP program Close
+
+    Shell &amp;quot;ftp -n -i -g -s:&amp;quot; &amp;amp; vPath &amp;amp; &amp;quot;\FtpComm.txt &amp;quot; &amp;amp; vFTPServ, vbNormalNoFocus
+
+    SetAttr vPath &amp;amp; &amp;quot;\FtpComm.txt&amp;quot;, vbNormal
+    Kill vPath &amp;amp; &amp;quot;\FtpComm.txt&amp;quot;
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note: Some variable must change by youself.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Setting a reference to the VBA Extensibility library by code</title>
+      <link>http://www.exceltoolset.com/setting-a-reference-to-the-vba-extensibility-library-by-code/</link>
+      <pubDate>Sun, 24 Oct 2010 00:57:04 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/setting-a-reference-to-the-vba-extensibility-library-by-code/</guid>
+      <description>&lt;p&gt;When your coding the VBE you have to set a reference to the VBA Extensibility library. You can add the reference programmatically with code like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub RefToLibrary()
+    &#39; create a reference to the VBA Extensibility library.
+    On Error Resume Next            &#39; in case the reference already exits
+    ThisWorkbook.VBProject.References _
+                  .AddFromGuid &amp;quot;{0002E157-0000-0000-C000-000000000046}&amp;quot;, 5, 0
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The VBIDE is the object library that defines all the objects and values that make up VBProject and the Visual Basic Editor. You must reference this library to use the VBA Extensibility objects. To add this reference, open the VBA editor, open your VBProject in the editor, and go to the Tools menu. There, choose References . In the References dialog, scroll down to Microsoft Visual Basic for Applications Extensibility 5.3 and check that item in the list.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Excel Articles on Excel Tools | Excel Tool Set</title>
+    <link>http://www.exceltoolset.com/categories/excel-articles/</link>
+    <description>Recent content in Excel Articles on Excel Tools | Excel Tool Set</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 22 Mar 2011 11:26:08 +0000</lastBuildDate>
+    <atom:link href="http://www.exceltoolset.com/categories/excel-articles/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How to Create A Linkable Hot Image</title>
+      <link>http://www.exceltoolset.com/how-to-create-a-linkable-hot-image/</link>
+      <pubDate>Tue, 22 Mar 2011 11:26:08 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-create-a-linkable-hot-image/</guid>
+      <description>&lt;p&gt;You might have noticed that some Web sites feature an hot image map to help navigate the site. An image map is a single image, but it&amp;#8217;s sensitive to the location at which you click it on hot area. This tip demonstrates how to create a &lt;strong&gt;linkable hot image&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;To create an image map, you must be familiar with the MouseOver event. This event is triggered whenever the mouse pointer moves over a particular control. In this case, the control is an Image control. Basically, this event lets you determine the horizontal and vertical coordinates of the mouse pointer, relative to the control.&lt;/p&gt;
+
+&lt;p&gt;Setting up the image map simply involves monitoring the mouse position, and taking the appropriate action if the control is clicked. The VBA code is shown below. Every mouse movement over the Image control triggers the &lt;strong&gt;MouseMove&lt;/strong&gt; event and executes the Image1_MouseMove subroutine. The mouse coordinates are passed to the subroutine via the X and Y arguments. A series of Select Case statements determines which flag is under the mouse pointer, and stores the country name in the Country variable. I also display the country in the status bar. Obviously, it will take some work to figure out the coordinates, and you&amp;#8217;ll probably want to use an image in which the &amp;#8220;subimages&amp;#8221; are rectangular.&lt;/p&gt;
+
+&lt;p&gt;When the image is clicked, the Image1_Click subroutine is executed. This subroutine simply activates a worksheet, the name of which is stored in the Country variable. The worksheets are named for the countries represented by the flags.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;VBA Code&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;In this example, the Image control is placed on a worksheet named Menu. Therefore, this code resides in the code module for the Menu sheet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Public Country As String
+
+Private Sub Image1_MouseMove(ByVal Button As Integer, _
+  ByVal Shift As Integer, ByVal X As Single, ByVal Y As Single)
+    Select Case Y &#39;Vertical coordinate
+        Case Is &amp;lt; 2 &#39;Off the map
+            Country = &amp;quot;&amp;quot;
+        Case Is &amp;lt; 47
+            Select Case X &#39;Horizontal coordinate
+                Case Is &amp;lt; 2: Country = &amp;quot;&amp;quot;
+                Case Is &amp;lt; 78: Country = &amp;quot;United States&amp;quot;
+
+                Case Is &amp;lt; 152: Country = &amp;quot;Canada&amp;quot;
+                Case Else: Country = &amp;quot;&amp;quot; &#39;Off the map
+            End Select
+        Case Is &amp;lt; 87
+            Select Case X &#39;Horizontal coordinate
+                Case Is &amp;lt; 2: Country = &amp;quot;&amp;quot;
+                Case Is &amp;lt; 40: Country = &amp;quot;&amp;quot;
+
+                Case Is &amp;lt; 112: Country = &amp;quot;Cuba&amp;quot;
+                Case Else: Country = &amp;quot;&amp;quot; &#39;Off the map
+            End Select
+        Case Is &amp;lt; 133
+            Select Case X &#39;Horizontal coordinate
+                Case Is &amp;lt; 2: Country = &amp;quot;&amp;quot;
+                Case Is &amp;lt; 78: Country = &amp;quot;Mexico&amp;quot;
+
+                Case Is &amp;lt; 152: Country = &amp;quot;Puerto Rico&amp;quot;
+                Case Else: Country = &amp;quot;&amp;quot; &#39;Off the map
+            End Select
+        Case Else &#39;Off the map
+            Country = &amp;quot;&amp;quot;
+    End Select
+&#39;   The statement below was used while figuring out the coordinates
+&#39;   Application.StatusBar = Country &amp;amp; &amp;quot; &amp;quot; &amp;amp; X &amp;amp; &amp;quot; &amp;quot; &amp;amp; Y
+    Application.StatusBar = Country
+End Sub
+
+Private Sub Image1_Click()
+    If Country &amp;lt;&amp;gt; &amp;quot;&amp;quot; Then Sheets(Country).Activate
+&#39;   Reset the status bar
+    Application.StatusBar = False
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; Another way to create an image map is to insert transparent objects over the image, and create event-handler subroutines for the objects.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Highlight Entire Current Row And Column In Excel</title>
+      <link>http://www.exceltoolset.com/how-to-highlight-entire-current-row-and-column-in-excel/</link>
+      <pubDate>Tue, 09 Nov 2010 06:02:45 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-highlight-entire-current-row-and-column-in-excel/</guid>
+      <description>&lt;p&gt;How can I use VBA or conditional formatting to highlight the entire current row and column of the current cell?&lt;/p&gt;
+
+&lt;p&gt;In your sheets worksheets selection change event, you can use something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+
+    Const HIGHLIGHT_COLOR As Long = 4
+
+    &#39;remove past colors
+    ActiveSheet.Cells.Interior.ColorIndex = xlNone
+
+    With Me
+        .Columns(Target.Column).Interior.ColorIndex = HIGHLIGHT_COLOR
+        .Rows(Target.Row).Interior.ColorIndex = HIGHLIGHT_COLOR
+    End With
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here&amp;#8217;s one way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;ActiveSheet.Rows(ActiveCell.Row).Interior.Color = RGB(r, g, b)
+ActiveSheet.Columns(ActiveCell.Column).Interior.Color = RGB(r, g, b)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can fill in r,g &amp;amp; b to achieve the highlighting color you want. If you use Interior.Color, you can use the vbColor constants instead of RGB values if you like. vbRed, vbGreen, vbYellow, etc.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Getting Coefficients Of Chart Trendline</title>
+      <link>http://www.exceltoolset.com/getting-coefficients-of-chart-trendline/</link>
+      <pubDate>Mon, 01 Nov 2010 01:18:12 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/getting-coefficients-of-chart-trendline/</guid>
+      <description>&lt;p&gt;When you add a trendline to a chart, Excel provides an option to display the trendline equation in the chart. This article describes how to create formulas that generate the trendline coefficients. You can then use these formulas to calculate predicted y values for give values of x.&lt;/p&gt;
+
+&lt;p&gt;These equations assume that your sheet has two named ranges: x and y.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Linear Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = m * x + b&lt;/p&gt;
+
+&lt;p&gt;m: =SLOPE(y,x)&lt;/p&gt;
+
+&lt;p&gt;b: =INTERCEPT(y,x)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Logarithmic Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = (c * LN(x)) + b&lt;/p&gt;
+
+&lt;p&gt;c: =INDEX(LINEST(y,LN(x)),1)&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(y,LN(x)),1,2)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Power Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y=c*x^b&lt;/p&gt;
+
+&lt;p&gt;c: =EXP(INDEX(LINEST(LN(y),LN(x),,),1,2))&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(LN(y),LN(x),,),1)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Exponential Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = c *e ^(b * x)&lt;/p&gt;
+
+&lt;p&gt;c: =EXP(INDEX(LINEST(LN(y),x),1,2))&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(LN(y),x),1)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2nd Order Polynomial Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = (c2 * x^2) + (c1 * x ^1) + b&lt;/p&gt;
+
+&lt;p&gt;c2: =INDEX(LINEST(y,x^{1,2}),1)&lt;/p&gt;
+
+&lt;p&gt;C1: =INDEX(LINEST(y,x^{1,2}),1,2)&lt;/p&gt;
+
+&lt;p&gt;b = =INDEX(LINEST(y,x^{1,2}),1,3)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3rd Order Polynomial Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Equation: y = (c3 * x^3) + (c2 * x^2) + (c1 * x^1) + b&lt;/p&gt;
+
+&lt;p&gt;c3: =INDEX(LINEST(y,x^{1,2,3}),1)&lt;/p&gt;
+
+&lt;p&gt;c2: =INDEX(LINEST(y,x^{1,2,3}),1,2)&lt;/p&gt;
+
+&lt;p&gt;C1: =INDEX(LINEST(y,x^{1,2,3}),1,3)&lt;/p&gt;
+
+&lt;p&gt;b: =INDEX(LINEST(y,x^{1,2,3}),1,4)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Higher Order Polynomial Trendline&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Notice the pattern in the two preceding sets of formulas.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How To Create A Splash Screen For An Excel Workbook</title>
+      <link>http://www.exceltoolset.com/how-to-create-a-splash-screen-for-an-excel-workbook/</link>
+      <pubDate>Thu, 28 Oct 2010 23:01:54 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-create-a-splash-screen-for-an-excel-workbook/</guid>
+      <description>&lt;p&gt;This article describes how to create a splash screen for a Excel workbook. A splash screen appears when the workbook is opened and disappears automatically after a specific time has elapsed.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Setting it up&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Follow these instructions to create a splash screen for your project.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Create your workbook as usual.&lt;/li&gt;
+&lt;li&gt;Activate the Visual Basic Editor and insert a new UserForm into the project. The code here assumes this form is named UserForm1.&lt;/li&gt;
+&lt;li&gt;Place any controls you like on UserForm1. For example, you may want to insert an Image control that has your company&amp;#8217;s logo. Also, you may want to set the UserForm&amp;#8217;s Caption property to an empty string.&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Insert the following subroutine into the code module for the ThisWorkbook object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
+UserForm1.Show
+End Sub
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Insert the following subroutine into the code module for UserForm1:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub UserForm_Activate()
+Application.OnTime Now + TimeValue(&amp;quot;00:00:05&amp;quot;), &amp;quot;KillTheForm&amp;quot;
+End Sub  
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Insert the following subroutine into a normal VBA module:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub KillTheForm()
+Unload UserForm1
+End Sub
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;How it works&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;When the workbook is opened, the Workbook_Open subroutine is executed. This subroutine displays the UserForm. When the UserForm is displayed, it&amp;#8217;s Activate event occurs &amp;#8211; which triggers the UserForm_Activate subroutine. This subroutine uses the OnTime method of the Application object to execute a subroutine (named KillTheForm) at a particular time. In this case, the time is five seconds from the current time (change this interval by modifying the argument for the TimeValue function). The KillTheForm subroutine simply unloads the UserForm.&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://spreadsheetpage.com&#34;&gt;http://spreadsheetpage.com&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using COUNTIF function to compare two columns in Excel</title>
+      <link>http://www.exceltoolset.com/using-countif-function-to-compare-two-columns-in-excel/</link>
+      <pubDate>Sat, 23 Oct 2010 23:51:23 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/using-countif-function-to-compare-two-columns-in-excel/</guid>
+      <description>&lt;p&gt;I have an excel document with columns A and B. Row A has 2595 values. Row B has 411 values.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#8217;m trying to figure out how I can compare these two columns by marking column C with the number of times we find a value(s) from column A.&lt;/p&gt;
+
+&lt;p&gt;For Example&lt;/p&gt;
+
+&lt;pre&gt;COLUMN A           COLUMN B        COLUMN C
+1                  1               1 (because we have one value of 1 from column A)
+2                  2               1 (because we have one value of 2 from column A) 
+3                  3               2 (because we have 2 threes from column A) 
+3                  4 
+4                  5
+5                  6               2 (because there are two 6&#39;s in column A) 
+6                  7               0 (because there are no 7&#39;s in column A)
+6
+&lt;/pre&gt;
+
+&lt;p&gt;We can use the &lt;strong&gt;COUNTIF&lt;/strong&gt; function in Excel to do this.&lt;/p&gt;
+
+&lt;pre&gt;Column A    Column B    Column C                Answer
+1          1            =COUNTIF($A$2:$A$9,B2) [1]
+2          2            =COUNTIF($A$2:$A$9,B3) [1]
+3          3            =COUNTIF($A$2:$A$9,B4) [2]
+3          5            =COUNTIF($A$2:$A$9,B5) [1]
+4          6            =COUNTIF($A$2:$A$9,B6) [2]
+5          7            =COUNTIF($A$2:$A$9,B7) [0]
+6           
+6
+&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Use keyboard shortcut to Zoom in or out on Excel Workbook</title>
+      <link>http://www.exceltoolset.com/use-keyboard-shortcut-to-zoom-in-or-out-on-excel-workbook/</link>
+      <pubDate>Sat, 23 Oct 2010 00:42:30 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/use-keyboard-shortcut-to-zoom-in-or-out-on-excel-workbook/</guid>
+      <description>&lt;p&gt;For most purposes, Excel allows you to issue commands and perform functions by using either the mouse or the keyboard. Unfortunately, Excel does not provide &amp;#8220;equal access&amp;#8221; for all commands. For instance, it is relatively easy to zoom in or out using the mouse, but there is no easy way to do it using the keyboard (other than using the keyboard to traverse the menus and select a zoom setting).&lt;/p&gt;
+
+&lt;p&gt;If you want the ability to zoom in or out easily using the keyboard, the only way to get it is to create a macro and then assign the macro to a keyboard combination. The following VBA macro (MyZoomIn) allow you to zoom in to (enlarge) a worksheet by 10%:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub MyZoomIn()
+   Dim ZP As Integer
+   ZP = Int(ActiveWindow.Zoom * 1.1)
+   If ZP &amp;gt; 400 Then ZP = 400
+   ActiveWindow.Zoom = ZP
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice that the macro only allows you to zoom in up to 400%. This is because Excel allows you to only zoom that high, and any higher would generate an error. A slight variation on the same theme results in a macro I call MyZoomOut. It zooms out of (reduces) a worksheet by 10%:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Sub MyZoomOut()
+   Dim ZP As Integer
+   ZP = Int(ActiveWindow.Zoom * 0.9)
+   If ZP &amp;amp;lt; 10 Then ZP = 10
+   ActiveWindow.Zoom = ZP
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This macro sets the bottom boundary at 10%, which is the smallest you can go. Any smaller, and Excel would generate an error again.&lt;/p&gt;
+
+&lt;p&gt;The final trick to make these macros really useful is to assign them to a keyboard combination. You can then quickly zoom in or out by 10% with a simple keystroke. The following are the steps you can use to assign a macro to a keyboard combination:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Press Alt+F8. Excel displays the Macro dialog box, which includes a list of your defined macros. (MyZoomIn and MyZoomOut should be among them.)&lt;/li&gt;
+&lt;li&gt;Select the MyZoomIn macro.&lt;/li&gt;
+&lt;li&gt;Click on Options. Excel displays the Macro Options dialog box. (Click here to see a related figure.)&lt;/li&gt;
+&lt;li&gt;In the Shortcut box, specify the shortcut you want to use. For instance, if you want to use Ctrl+I, you would enter an I in the Shortcut box.&lt;/li&gt;
+&lt;li&gt;Click on OK.&lt;/li&gt;
+&lt;li&gt;Select the MyZoomOut macro.&lt;/li&gt;
+&lt;li&gt;Click on Options. Excel again displays the Macro Options dialog box.&lt;/li&gt;
+&lt;li&gt;In the Shortcut box, specify the shortcut you want to use. For instance, if you want to use Ctrl+O, you would enter an O in the Shortcut box.&lt;/li&gt;
+&lt;li&gt;Click on OK.&lt;/li&gt;
+&lt;li&gt;Click on Cancel to close the Macro dialog box.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;From: excel.tips.net&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Choose the best type of chart in Excel</title>
+      <link>http://www.exceltoolset.com/choose-the-best-type-of-chart-in-excel/</link>
+      <pubDate>Fri, 22 Oct 2010 23:57:34 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/choose-the-best-type-of-chart-in-excel/</guid>
+      <description>&lt;p&gt;One factor to consider as you want to choose the best type of chart in Excel is the relative strengths and weaknesses of each type of graph. One could, of course, write an entire book on this subject. However, May you find it useful to examine the strengths and weaknesses described in the paragraphs that follow to choose a graphic.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Graphic area charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Areas plot point values using the data lines. Optionally, the model cell so that the accumulation of data are point values and areas of color between the lines.&lt;/p&gt;
+
+&lt;p&gt;With the two advantages you can view the trend of the first data set and the total of all data sets, and can often create data sets total implied.&lt;/p&gt;
+
+&lt;p&gt;For example, suppose you draw two sets of data in a graph: one for a total cost and benefits. In this situation, in fact, a third set of data – revenue – because the total data sets implicitly to create a third data set for total income.&lt;/p&gt;
+
+&lt;p&gt;Areas too, it is virtually impossible to compare the values of data points in the second and the data series. You can get a very good idea of the first set of data values of data points, however.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Cylinder, cone and pyramid Letters&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Cylinder, cone and pyramid chart types have the same strengths and experience the same weaknesses as well as column and bar charts.&lt;/p&gt;
+
+&lt;p&gt;In addition, cylinder, cone and pyramid chart types, their three dimensions, which also suffer from a weakness. The new dimension, while interesting, it is often more accurate to compare various points of the given values.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Bubble charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Bubble Maps allow you to visually explore relationships between sets of data by processing the horizontal axis as the second value axis. To achieve this objective, the bubble charts plot pairs of data points.&lt;/p&gt;
+
+&lt;p&gt;For example, a bubble is income and the contribution of visual data in May suggests that people who earn more money, but only slightly increase their donations.&lt;/p&gt;
+
+&lt;p&gt;Bubble XY graphics cards, which also show the same information on the size of bubbles Excel with the values of a third data point.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Standing Up to the column charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The column data tables to plot the different values of the bars, but to organize through the bars of a vertical axis calibrated values.&lt;/p&gt;
+
+&lt;p&gt;Accordingly, the column of graphics work really well when you want to see data on a point value of the whole question of the whole issue of comparing data and that data are periods of weather.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Doughnut Charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Doughnut Charts work similar to pie chart, the presentation of data in serial and concentric rings indicating the value of each data point as a segment, or biting the ring.&lt;/p&gt;
+
+&lt;p&gt;Compared to those graphs, charts gifts have an advantage: it can take more than one data series. In practice, that suffers the same deficiencies as pie charts: do not compare data between the values of the series.&lt;/p&gt;
+
+&lt;p&gt;They are limited to small data sets. Almost always, something that appears in a doughnut graph must be of a different type of graph.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Line charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Line plot maps in general the individual data points on a line, or using a different marker symbols or lines of different colors to distinguish data sets, and the use of a horizontal data category.&lt;/p&gt;
+
+&lt;p&gt;The graphics on the line de-emphasize the different data points, which work well for large data sets. With a line graph, you can draw thousands of data points. Moreover, all types of Excel charts, graphs tend to highlight the changes and trends in the values of data points that May be helpful.&lt;/p&gt;
+
+&lt;p&gt;However, the line graphs suffer from several shortcomings: a focus on each of the values of data points that can hide small data sets in an inappropriate manner and that it is impossible to compare the different data points, a tendency to show trends based on time that does not exist, and a tendency to show the relationship between the data sets that do not exist.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Pie Charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Pie charts, as almost everyone knows, the display of a single set of data and data points represent segments of a circle, or slices of cake.&lt;/p&gt;
+
+&lt;p&gt;All this means that people can compare the values of data points for the total of all values of points and it could be argued this is a force in general, these charts are not based, as it can display a small set of data.&lt;/p&gt;
+
+&lt;p&gt;Almost always, something that appears in a graph should be on a table.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Stocks charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Stock of letters on a plot prices opened high-low-close format, as seen in a newspaper or a television.&lt;/p&gt;
+
+&lt;p&gt;Although this type of chart shows the safety analysis technique, the type of graph can be useful even for non-safe price. You can use this table, for example, to draw daily temperatures.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Surface charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Plot maps of a series of data in three dimensions, the network does not usually use colors to identify the data series, but rather to indicate the value varies axis.&lt;/p&gt;
+
+&lt;p&gt;The greatest strength of the surface is a graph that allows you to display with the same emphasis on the relationships within a set of data and data within a category.&lt;/p&gt;
+
+&lt;p&gt;A graph of the surface, however, suffers from two weaknesses: first, because the graph shows three-dimensional surface, it is easy for the topography of the plot area to hide data from valleys to peaks hide.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;With a circulation of XY charts&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Charts also known as XY scatter plot, it allows you to visually explore relationships between sets of data by processing the horizontal axis as the second value axis.&lt;/p&gt;
+
+&lt;p&gt;To do this, the graphics really intrigue XY pairs of data points. For example, an XY graph to trace the relationship between income and charitable donations.&lt;/p&gt;
+
+&lt;p&gt;The strength of an XY chart is that it allows you to explore the fundamental relationship, between two sets of data. In fact, the XY table is the only type of Excel chart that allows you to do so.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to set default zoom size for specific Workbooks when opened</title>
+      <link>http://www.exceltoolset.com/how-to-set-default-zoom-size-for-specific-workbooks-when-opened/</link>
+      <pubDate>Fri, 22 Oct 2010 22:37:08 +0000</pubDate>
+      
+      <guid>http://www.exceltoolset.com/how-to-set-default-zoom-size-for-specific-workbooks-when-opened/</guid>
+      <description>&lt;p&gt;If you work with workbooks first worked on by your colleagues, you may be frustrated by the zoom factor applied to those workbooks by those others. For instance, if your colleague (Wanda) has a huge monitor, it wouldn&amp;#8217;t be uncommon for her to reduce the zoom factor on Excel to 75% or even 60%. The purpose, of course, is so she isn&amp;#8217;t overpowered by things that look very large at the full zoom factor.&lt;/p&gt;
+
+&lt;p&gt;The problem is that the zoom factor is saved with the workbook. Thus, when Wanda saves the workbook and hands it off to you, when you open it, the workbook is still displayed at whatever zoom factor Wanda last used. If you don&amp;#8217;t have the same size monitor as Wanda, then the workbook may be almost illegible on your system.&lt;/p&gt;
+
+&lt;p&gt;There are only two possible solutions to this problem. First, you can simply adjust the zoom factor once you open the workbook. There are a multitude of ways to do this, but the easiest involve the Zoom setting on the Formatting toolbar, or using the scroll wheel on your mouse. (On some systems you may need to hold down the Ctrl key in order for the scroll wheel to adjust the zoom factor.)&lt;/p&gt;
+
+&lt;p&gt;The second workaround is to create a macro that gets saved with the workbook. The macro can run every time the workbook is opened, and thereby set the zoom factor. (This macro should be added to the This Workbook code window in the VBA editor.)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
+    ActiveWindow.Zoom = 100  &#39;also you can change to other size
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only problem with a macro such as this, of course, is that whenever Wanda (your colleague) opens the workbook on her system, the zoom factor is also set and she&amp;#8217;ll get just as frustrated with you as you were with her.&lt;/p&gt;
+
+&lt;p&gt;Perhaps a solution is to create a more involved macro—one that checks the current screen resolution and then sets the zoom factor accordingly. For instance, the following macro could be used to make the adjustments based on resolution:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Declare Function GetSystemMetrics32 Lib &amp;quot;user32&amp;quot; _
+    Alias &amp;quot;GetSystemMetrics&amp;quot; (ByVal nIndex As Long) As Long
+
+Public Sub ScreenRes()
+    Dim lResWidth As Long
+    Dim lResHeight As Long
+    Dim sRes As String
+
+    lResWidth = GetSystemMetrics32(0)
+    lResHeight = GetSystemMetrics32(1)
+    sRes = lResWidth &amp;amp; &amp;quot;x&amp;quot; &amp;amp; lResHeight
+    Select Case sRes
+        Case Is = &amp;quot;800x600&amp;quot;
+            ActiveWindow.Zoom = 75
+        Case Is = &amp;quot;1024x768&amp;quot;
+            ActiveWindow.Zoom = 125
+        Case Else
+            ActiveWindow.Zoom = 100
+    End Select
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This routine checks the screen resolution and adjusts the window accordingly. Other resolutions and zooms may be added easily. To make the routine run automatically, just use a Workbook_Open event handler in the This Workbook code window to trigger the macro:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
+    ScreenRes
+End Sub
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
