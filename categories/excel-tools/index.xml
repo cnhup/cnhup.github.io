@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Excel Tools on Excel Tools | Excel Tool Set</title>
-    <link>http://www.exceltoolset.com/categories/excel-tools/</link>
+    <link>http://www.exceltoolset.com:80/categories/excel-tools/</link>
     <description>Recent content in Excel Tools on Excel Tools | Excel Tool Set</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 20 Sep 2011 01:10:04 +0000</lastBuildDate>
-    <atom:link href="http://www.exceltoolset.com/categories/excel-tools/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.exceltoolset.com:80/categories/excel-tools/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Free Excel Tool - XLLoop</title>

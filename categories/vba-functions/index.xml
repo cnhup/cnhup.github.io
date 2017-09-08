@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vba Functions on Excel Tools | Excel Tool Set</title>
-    <link>http://www.exceltoolset.com/categories/vba-functions/</link>
+    <link>http://www.exceltoolset.com:80/categories/vba-functions/</link>
     <description>Recent content in Vba Functions on Excel Tools | Excel Tool Set</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 31 May 2014 01:38:01 +0000</lastBuildDate>
-    <atom:link href="http://www.exceltoolset.com/categories/vba-functions/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.exceltoolset.com:80/categories/vba-functions/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Sending EMail With VBA</title>

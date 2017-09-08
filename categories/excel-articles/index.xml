@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Excel Articles on Excel Tools | Excel Tool Set</title>
-    <link>http://www.exceltoolset.com/categories/excel-articles/</link>
+    <link>http://www.exceltoolset.com:80/categories/excel-articles/</link>
     <description>Recent content in Excel Articles on Excel Tools | Excel Tool Set</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 22 Mar 2011 11:26:08 +0000</lastBuildDate>
-    <atom:link href="http://www.exceltoolset.com/categories/excel-articles/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://www.exceltoolset.com:80/categories/excel-articles/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>How to Create A Linkable Hot Image</title>
@@ -201,28 +201,31 @@ ActiveSheet.Columns(ActiveCell.Column).Interior.Color = RGB(r, g, b)
 &lt;li&gt;Create your workbook as usual.&lt;/li&gt;
 &lt;li&gt;Activate the Visual Basic Editor and insert a new UserForm into the project. The code here assumes this form is named UserForm1.&lt;/li&gt;
 &lt;li&gt;Place any controls you like on UserForm1. For example, you may want to insert an Image control that has your company&amp;#8217;s logo. Also, you may want to set the UserForm&amp;#8217;s Caption property to an empty string.&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Insert the following subroutine into the code module for the ThisWorkbook object:&lt;/p&gt;
+&lt;li&gt;Insert the following subroutine into the code module for the ThisWorkbook object:&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub Workbook_Open()
-UserForm1.Show
+    UserForm1.Show
 End Sub
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;li&gt;&lt;p&gt;Insert the following subroutine into the code module for UserForm1:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Insert the following subroutine into the code module for UserForm1:&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub UserForm_Activate()
-Application.OnTime Now + TimeValue(&amp;quot;00:00:05&amp;quot;), &amp;quot;KillTheForm&amp;quot;
+    Application.OnTime Now + TimeValue(&amp;quot;00:00:05&amp;quot;), &amp;quot;KillTheForm&amp;quot;
 End Sub  
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;li&gt;&lt;p&gt;Insert the following subroutine into a normal VBA module:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Insert the following subroutine into a normal VBA module:&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-basic&#34;&gt;Private Sub KillTheForm()
-Unload UserForm1
+    Unload UserForm1
 End Sub
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;strong&gt;How it works&lt;/strong&gt;&lt;/p&gt;
 
